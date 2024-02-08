@@ -23,7 +23,7 @@ help.start()
 ```
 
 <br> <br> In the bottom right window of R Studio, you will see a Help
-window that displays basic help commands for the program. 
+window that displays basic help commands for the program.
 
 ### Install software to grab data
 
@@ -257,10 +257,10 @@ with [the slice
 commands.](https://dplyr.tidyverse.org/reference/slice.html)
 
 ```{r}
-MediaBucks %>% 
-  select(COMPANY, Salary) %>% 
-  slice_max(Salary, n = 10)
 
+MediaBucks %>% 
+  select(COMPANY, TITLE, Salary) %>% 
+  slice_max(Salary, n = 10)
 ```
 
 Questions:
@@ -269,6 +269,17 @@ Questions:
 1: View the range of your data    
 2: Number of rows  
 3: Number of rows cut with filter  
+```
+
+```{r}
+#1. View the range of your data   
+summary(MediaBucks$Salary)
+
+#2.Number of rows 
+nrow(MediaBucks)
+
+#3.Number of rows cut with filter  
+nrow(MediaSalary)
 ```
 
 <br>
@@ -300,7 +311,7 @@ Bloom <- subset(MediaBucks, grepl("?Bloomberg", COMPANY))
 Build a table with several companies of your choice
 
 ```{r}
-BigBoys <- filter(MediaSalary, COMPANY %in% c("NewYorkTimes", "WallStreetJournal", "Bloomberg"))    
+BigEBoys <- filter(MediaSalary, COMPANY %in% c("NewYorkTimes", "WallStreetJournal", "Bloomberg"))    
 ```
 
 Table with just reporter salaries
@@ -317,6 +328,31 @@ Questions:
 2: Make a table for editors, figure out medians.   
 3: Find highest paid editor. Resent them.   
 4: Make a table for any position involving data  
+```
+
+```{r}
+#1: Who is making $230,504 as a reporter??? 
+
+paid <- subset(MediaBucks, Salary=="230504")  
+
+#A senior reporter at ProPublic is making $230,504.
+
+#2. Make a table for editors, figure out medians. 
+Editors <- subset(MediaBucks, grepl("?editor", TITLE))
+summary(Editors$Salary)
+
+#The median salary for editors is $60240.00.
+
+#3.Find highest paid editor. Resent them.  
+
+MediaBucks %>% 
+  select(COMPANY, TITLE, Salary) %>% slice_max(Salary, n = 10)
+
+#The highest paid editor is a senior photo editor from tribune publishing who makes $770,000.
+
+#4.Make a table for any position involving data  
+Data <- subset(MediaBucks, grepl("?data", TITLE, ignore.case = TRUE))
+
 ```
 
 Table with Black reporters at Wall Street Journal
@@ -401,7 +437,8 @@ How to conduct filter queries from a dataset
 ```
 
 ```{r}
-#your answer here
+NYT <- subset(MediaBucks, COMPANY=="NewYorkTimes")  
+summary(NYT$Salary)
 ```
 
 ```         
@@ -409,15 +446,24 @@ How to conduct filter queries from a dataset
 ```
 
 ```{r}
-#your answer here
+MediaBucks %>%
+filter(COMPANY == "NewYorkTimes")
+
+#The highest paid position at NYT is an executive editor who is Black and put noanswer for gender. 
+
 ```
+
+#your answer here
 
 ```         
 3: Search for Bloomberg,  check median salary, compare to NYT results above.
 ```
 
 ```{r}
-#your answer here
+BLOOM <- subset(MediaBucks, COMPANY=="Bloomberg")  
+summary(BLOOM$Salary)
+
+#The median salary at Bloomberg is lower than the median salary at the New York Times. 
 
 ```
 

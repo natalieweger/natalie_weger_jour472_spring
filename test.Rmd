@@ -1,0 +1,28 @@
+---
+title: "R Notebook"
+name: Natalie Weger 
+date: 2/28/2024
+assignment: data notebook part 2 
+output: html_notebook
+---
+
+Question #1: Are there extreme differences between different communities in Baltimore (in 2020) in the percentage of white students enrolled in school?
+
+```{r}
+
+baltimore_white <- read.csv("~/Downloads/Percent_of_Students_that_are_White_(non-Hispanic).csv")
+View (baltimore_white)
+
+```
+
+Question #2: Does this difference cause any differences in the quality of education or exam results? 
+
+```{r}
+
+```
+
+Question #3: Have any communities in Baltimore seen a significant increase or decrease in white students over the past decade or so?
+
+```{r}
+
+```

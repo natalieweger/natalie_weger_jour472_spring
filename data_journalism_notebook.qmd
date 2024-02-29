@@ -1,0 +1,79 @@
+---
+title: "w"
+format: html
+editor: visual
+name: natalie weger
+date: 2/28/2024 
+project: data journalism notebook part 2 
+---
+
+## Question 1: 
+
+Are there extreme differences between different communities in Baltimore (in 2021) in the percentage of white students enrolled in school?
+
+```{r}
+
+#downloading the data 
+baltimore_white <- read.csv("~/Downloads/Percent_of_Students_that_are_White_(non-Hispanic).csv")
+
+#loading librarires
+library(tidyverse)
+library(rio)
+library(janitor)
+
+#summarizing the data to find differences in baltimore neighborhoods 
+summary(baltimore_white$wstud21)
+
+#finding the top 10 baltimore communites with highest white population 
+baltimore_white %>% 
+  select(CSA2020, wstud21) %>% 
+  slice_max(wstud21, n = 10) %>% 
+  arrange(desc(wstud21))
+  
+#finding the 10 baltimore communities with the lowest white population 
+baltimore_white %>% 
+select(CSA2020, wstud21) %>% 
+  slice_min(wstud21, n = 10) %>% 
+  arrange(wstud21)
+
+```
+
+Answer #1: There does seem to be extreme differences between communities in the amount of white students who lived in Baltimore in 2021. For example, South Baltimore was made up of about 80.51% of white students and Canton was made up of about 67.86% of white students. On the other hand, there are some communities, such as Edmondson Village and Greater Rosemont, that have less than 1% white students. This makes me wonder what are the differences between these neighborhoods, despite all of them being in Baltimore, that could cause this difference.
+
+It is also interesting how Baltimore seemed to have a low percentage of white students in 2021. For example, the median of the data was about 4.42%, meaning that half of the communities in Baltimore have less than 4.42% of white students. Additionally, the third quartile of white students was about 13.18%, while the maximum neighborhood of South Baltimore was was at 80.51%. It's important to look into why most of Baltimore seems to have a low percentage of white students, which inversely means that most school communities have a high percentage of people of color.
+
+## Question 2: 
+
+Does this difference cause any differences in the quality of education, such as the dropout rate?  
+
+```{r}
+
+```
+
+## Question 3: 
+
+Have any communities in Baltimore seen a significant increase or decrease in white students over the past decade or so?
+
+```{r}
+
+#create a column of the percentage change of the white population from 2010-2020
+baltimore_white <- baltimore_white %>%
+  select(CSA2020, wstud11, wstud21) %>%
+    mutate(diff_pct_wstud = (wstud21-wstud11)/wstud11) %>% 
+    arrange(desc(diff_pct_wstud))
+view(baltimore_white)
+
+#find the top 25 communities with the biggest white population increase 
+baltimore_white %>%
+  select (CSA2020, diff_pct_wstud) %>%
+  slice_max (diff_pct_wstud, n = 25) 
+view(baltimore_white)
+
+#find the 25 communities with the biggest white population decrease 
+baltimore_white %>%
+  select (CSA2020, diff_pct_wstud) %>%
+  slice_min (diff_pct_wstud, n = 25) 
+view(baltimore_white)
+```
+
+Answer #3: Communities in Baltimore do not seem to have a significant increase or decrease in white students from 2011 to 2021. The places with the most significant percentage change of white students includes Midway/Coldstream with a 6.35% increase and Southern Park Heights by 4.20%. Inversely, this means that the students of color in those communities has decreased by 6.35% and 4.20%. There do not seem to be significant decreases in white students in Baltimore communities, with the biggest decrease over the decade being about 0.71% in Greektown/Bayview. This data is important to note because it means that the diversity rates in terms of white students and students of color has not shifted substantially throughout the past 10 years. It's important to understand why these rate have no significantly changed, especially considering that the percentage of white students in Baltimore seems to be extremely low.

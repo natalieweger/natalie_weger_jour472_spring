@@ -36,7 +36,7 @@ library(janitor)
 #rsw - i can't load the data with file paths like these - it's directing me to your hard drive. the data wasn't on your github either
 
 #downloading the data 
-baltimore_white <- read.csv("Percent_of_Students_that_are_White_(non-Hispanic).csv")
+baltimore_white <- read_csv("white_students.csv")
 
 #summarizing the data to find differences in baltimore neighborhoods 
 summary(baltimore_white$wstud21)
@@ -70,7 +70,7 @@ Does this difference of white students cause any differences in the quality of e
 
 
 #download reading test scores 
-reading_scores <- read.csv("~/Downloads/read_data.csv")
+reading_scores <- read.csv("test_scores.csv")
 
 #finding the top 5 baltimore communites with highest reading scores
 reading_scores %>% 

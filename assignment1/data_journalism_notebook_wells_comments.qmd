@@ -4,22 +4,14 @@ format: html
 editor: visual
 name: natalie weger
 date: 2/29/2024 
-project: data journalism notebook part two
+project: data journalism notebook final
 ---
-
-Natalie - The code failed at the first chunk because the data was not loaded to your GitHub and the file path directed me to your hard drive. So there's no way I could run your code and assess whether things are okay or not.
-
-The fix: 1) Any data you use needs to be uploaded to a folder containing the code for your assignment. So make a folder on this GitHub site and call it Assignment1 (https://github.com/natalieweger/natalie_weger_jour472_spring/tree/main)
-
-2)  Percent_of_Students_that_are_White\_(non-Hispanic).csv and read_data.csv along with this notebook.
-
-Make sure this is done for the next stage of the assignment. Thanks, Prof. Wells
 
 Natalie Weger
 
 2/29/2024
 
-Data Journalism Notebook Part Two
+Data Journalism Notebook Final
 
 ## Question 1:
 

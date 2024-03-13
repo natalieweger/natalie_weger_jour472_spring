@@ -3,13 +3,13 @@ title: "w"
 format: html
 editor: visual
 name: natalie weger
-date: 2/29/2024 
+date: 3/12/2024 
 project: data journalism notebook final
 ---
 
 Natalie Weger
 
-2/29/2024
+3/12/2024
 
 Data Journalism Notebook Final
 
@@ -103,7 +103,7 @@ top_5_communities %>%
     title = "Percent of 8th grade students passing MSA reading in 2014",
     x = "Communities",
     y = "Percent of Students",
-    caption = "Source: Baltimore Neighborhood Indicator Alliance"
+    caption = "Source: Baltimore Neighborhood Indicator Alliance\nBy Natalie Weger\n03/12/2024"
   )
 
 
@@ -140,3 +140,21 @@ view(baltimore_white)
 ```
 
 Answer #3: Communities in Baltimore do not seem to have a significant increase or decrease in white students from 2011 to 2021. The places with the most significant percentage change of white students includes Midway/Coldstream with a 6.35% increase and Southern Park Heights by 4.20%. Inversely, this means that the students of color in those communities has decreased by 6.35% and 4.20%. There do not seem to be significant decreases in white students in Baltimore communities, with the biggest decrease over the decade being about -0.71% in Greektown/Bayview. This data is important to note because it means that the diversity rates in terms of white students and students of color has not shifted substantially throughout the past 10 years. It's important to understand why these rate have not significantly changed, especially considering that the percentage of white students in Baltimore seems to be extremely low.
+
+## Reporting Memo: 
+
+Based on my data analysis for this project, my biggest finding is that there does seem to be a correlation between the amount of white students in Baltimore and the number of 8th grade students who passed MSA reading in 2014. Although correlation doesn't equal causation, I think that the relationship is something worth looking into. Of the top five Baltimore communities that had the highest passing rate of MSA reading for 8th grade students, three of them (North Baltimore/Guilford/Homeland, Greater Roland Park and South Baltimore) also had the highest white student population. Since there are 55 communities in Baltimore it is intriguing that three of the communities would show up in these results. I would contact the North Baltimore Local Schools Board of Education, Guilford Public Schools department of communications, Greater Roland Park education communications department and the Baltimore City Public Schools education department to see if they have any comments about why the three of the five Baltimore communities that have the highest white student population also had the highest MSA passing rate in 2014. Other interesting findings of this piece is that South Baltimore does seem to be an outlier in the amount of white students within its public schools. This is because South Baltimore was made up of about 80.21%  of white students in 2021, while the median of the data was about 4.42%, meaning that half of the communities in Baltimore have less than 4.42% white students. This is interesting, considering that location-wise, South Baltimore is still towards the middle of Baltimore. For this data, I would contact Colline Emmanuelle, who is a communications manager in South Baltimore. Lastly, another piece of data that I found interesting is that the white student population (and therefore the minority population) in Baltimore has changed over the years. For this information, I would contact the mayor of Baltimore, Brandon Scott, to comment on this trend and the insights found within this data.
+
+**Tweet #1:** Of the five Baltimore communities with the highest white student population, three of those communities had the highest MSA reading passing rate in 2014. 
+
+North Baltimore/Guilford/Homeland, Greater Roland Park and South Baltimore were in the top five of 55 Baltimore communities that had the highest MSA reading passing rate. 
+
+For \@newspaper:
+
+\*link\*
+
+**Tweet #2:** South Baltimore had the highest white student population in 2021 with about 80.51% white students in 2021. However, half of the communities in Baltimore were made up of less than 4.42% of white students in that same year.
+
+Learn more about why South Baltimore has a higher white student population in my latest for \@newspaper:
+
+\*link\*

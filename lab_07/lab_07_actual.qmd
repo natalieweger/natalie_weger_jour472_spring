@@ -30,13 +30,12 @@ There are four tables in the data folder.
 **Q1** Which county or city received the most total opioid pills per person? Add up all the pills between 2006 and 2014 when doing this calculation. How many total pills, and what was the per person rate?
 
 ```{r}
-
 #loading libraries 
 library(tidyverse)
 library(rio)
 library(janitor)
 
-#loading datasets
+#loading arcos and county data 
 arcos <- read_csv("~/Documents/Github/natalie_weger_jour472/lab_07/data/arcos.csv")
 
 county_population <- read_csv("~/Documents/Github/natalie_weger_jour472/lab_07/data/county_population_2014.csv")
@@ -52,16 +51,61 @@ arcos_county <- arcos %>%
   arrange(desc(pills_per_person))
 
 arcos_county
+
 ```
 
-**Q2** Which U.S. state had the highest number of opioid pills per person for pills shipped in 2014? How many total pills, and what was the per person rate? How did that compare to Washington, D.C.?
+**Q2_New** Which U.S. state saw the highest percentage increase in opiod pills from 2006 to 2014?
+
+--Produce two tables, one for 2006 and one for 2014. In the 2006 table, rename the total to total_2006. In the 2014 table, rename the total to total_2014. --Join the tables into a new table, arcos_combo --Your table must have the full name of the states.
+
+Join with the state crosswalk table --Calculate the percentage change between 2006 and 2014 --Create one table with the top 5 states by percentage increase --Create a second table with the 5 states with the lowest percentage increase.
 
 ```{r}
+#load state crosswalk and state data 
+state_population <- read_csv("~/Documents/Github/natalie_weger_jour472/lab_07/data/state_population_2014.csv")
+
+state_crosswalk <- read_csv("~/Documents/Github/natalie_weger_jour472/lab_07/data/state_crosswalk.csv")
+
+#creating a 2006 and 2014 table 
+total_2006 <- arcos %>%
+  filter(year==2006)
+total_2014 <- arcos %>%
+  filter(year==2014)
+
+#creating an acros_combo table and arcos_combo_sidewalk table 
+arcos_combo <- total_2006 %>%
+  inner_join(total_2014, by="buyer_state") 
+
+arcos_combo_sidewalk <- arcos_combo %>%
+  inner_join(state_crosswalk, by=c("buyer_state"="state_abb"))
+
+#grouping the amount of pills by county to states
+arcos_state <- arcos %>%
+  left_join (state_crosswalk, by = c("buyer_state" = "state_abb")) %>%
+  group_by(state_name) %>%
+  summarise(total_2006 = sum(total_pills[year == 2006]),
+            total_2014 = sum(total_pills[year == 2014]))
+
+#making percentage change column by state  
+arcos_state <- arcos_state %>%
+    mutate(percent_change=((total_2014-total_2006)/total_2006)*100)
+
+
+#creating two tables for highest and lowest percentage change amount pills in each state
+top_states <- arcos_state %>%
+  arrange(desc(percent_change)) %>%
+  slice_max(percent_change, n = 5)
+  
+
+bottom_states <- arcos_state %>%
+  arrange(desc(percent_change)) %>%
+  slice_min(percent_change, n = 5)
+  view(bottom_states)
+
+
 
 ```
 
-**Q3** Write a sentence that could be dropped in as the lede of a news story from the finding in question two.
+--Write a sentence that could be dropped in as the lede of a news story from the finding in question two.
 
-```{r}
-
-```
+**Q3** Which U.S. state had the highest number of opioid pills per person for pills shipped in 2014? How many total pills, and what was the per person rate? How did that compare to Washington, D.C.?

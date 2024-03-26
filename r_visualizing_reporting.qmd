@@ -446,8 +446,8 @@ in descending order
 
 ```{r}
 
-top_12_dispo <- as.data.frame(all_dispo) %>%
-  slice_max(all_dispo, n=12)
+
+top_12_dispo <-select(Cox2014,)
   
 top_12_dispo %>%
   ggplot() + 

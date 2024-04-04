@@ -21,6 +21,7 @@ When you are finished, commit changes and push to your personal GitHub repo, the
 library(tidyverse)
 library(janitor)
 library (sf)
+library(leaflet)
 ```
 
 ## Load data
@@ -40,6 +41,10 @@ baltimore_homicides <- read_rds("data/baltimore_homicides.rds")
 baltimore_demographics <- read_rds ("data/baltimore_tract_demographics.rds")
 baltimore_shape_files <- read_rds ("data/baltimore_tract_shapefiles.rds")
 
+view(baltimore_homicides)
+view (baltimore_demographics)
+view(baltimore_shape_files)
+
 ```
 
 ## Questions
@@ -54,4 +59,22 @@ baltimore_shape_files <- read_rds ("data/baltimore_tract_shapefiles.rds")
 
 ```{r}
 
+#classify different census tracts as majority white or not 
+majority_white <- baltimore_demographics %>%
+  mutate(pct_white = white_pop/total_pop) %>%
+  select(geoid,name,pct_white) %>%
+  mutate(neighborhood_type = case_when(
+    pct_white > .50 ~ "majority_white",
+    TRUE ~ "not_majority_white"
+  ))
+
+
+#joining spatial data with the majority_white neighborhoods classifications
+majority_white_join <- majority_white %>%
+  inner_join(baltimore_shape_files) %>%
+  st_as_sf()
+
+
+
+  
 ```

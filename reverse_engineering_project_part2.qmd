@@ -4,11 +4,7 @@ format: html
 editor: visual
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## **Nearly 250 women have been fatally shot by police since 2015**
+## **Nearly 250 women have been fatally shot by police since 2015 - The Washington Post** 
 
 Loading libraries
 
@@ -25,26 +21,25 @@ Loading datasets
 ```{r}
 
 #load dataset
-police_shooting <- read_csv("~/Documents/Github/fatal-police-shootings-data (2).csv")
+police_shooting <- read_csv("~/Documents/Github/fatal-police-shootings-data (2).csv") %>%
+  clean_names() 
 police_shooting_date <- police_shooting %>% 
-  select(gender, armed, date, race) %>% 
-  filter(date <'2020-09-04')
+  filter(date <= as.Date('2020-09-04'))
+  nrow(police_shooting_date)
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+Creating separate datasets for women and men who have been fatally shot by the police since 2015
 
 ```{r}
 
-#Have to filter by date, check the one extra death
+#Create datasets for just women and men 
 police_shooting_men<- police_shooting %>% 
   select(gender, armed, date, race) %>% 
-  filter(gender=="M", date < '2020-09-04')
+  filter(gender=="M", date <= '2020-09-04')
 police_shooting_women <- police_shooting %>% 
   select(gender, armed, name, date, race) %>% 
-  filter(gender=="F",date <'2020-09-04')
+  filter(gender=="F",date <='2020-09-04')
 
-#Get the count of unarmed, and then the count of everything else and the assumptions that were made
-#!'Unarmed'
 ```
 
 **1) Since The Washington Post began [tracking fatal shootings by police](https://www.washingtonpost.com/graphics/investigations/police-shootings-database/) in 2015, officers have fatally shot 247 women out of the more than 5,600 people killed overall. Of the 247 women fatally shot, 48 were Black and seven of those were unarmed.**
@@ -52,25 +47,25 @@ police_shooting_women <- police_shooting %>%
 ```{r}
 #finding the total rows of the data to see how many were shot 
 nrow(police_shooting_date)
-#there are 5609 rows, meaning 5609 people were fatally shot by police between 2015 to 2020
+  #there are 5609 rows, meaning 5609 people were fatally shot by police between 2015 to 2020
 
 #finding the number of females in the data 
 sum(police_shooting_date$gender == "F", na.rm = TRUE)
-#there are 248 rows, meaning that 248 females were fatally shot by police
+  #there are 248 rows, meaning that 248 females were fatally shot by police
 
 #finding the number of women who identified as black in the women dataset
 police_shooting_women %>%
   select(name, armed, date, race) %>%
   filter (race == "B") %>%
   nrow()
-#there are 48 rows, meaning that of the 248 females, 48 identified as black
+  #there are 48 rows, meaning that of the 248 females, 48 identified as black
 
 #finding the number of women who were unarmed in the women dataset
 police_shooting_women %>%
   select(name, armed, date, race) %>%
   filter (race == "B", armed == "unarmed") %>%
   nrow()
-#there are 7 rows, meaning of the black women fatally shot, 7 were unarmed 
+  #there are 7 rows, meaning of the black women fatally shot, 7 were unarmed 
 
 ```
 
@@ -78,35 +73,37 @@ police_shooting_women %>%
 
 ```{r}
 
-#mutating the data to take the amount of values that identify both as black and female and dividing it by the total to see the amount of black women shot fatally by police
+#mutating the data to take the amount of values that identify both as black and female and dividing it by the total to see the percentage of black women shot fatally by police
 total_percentage_black_women <- police_shooting_date %>%
-  summarize(total_people = n()) %>%
-  mutate(black_count = sum(police_shooting_date$race == "B" & police_shooting_date$gender == "F", na.rm = TRUE)) %>%
+  summarize(
+    total_people = n(),
+    black_count = sum(race == "B" & gender == "F" & !is.na(race))) %>%
   mutate(total_percentage_black_women = (black_count / total_people) * 100)
-
 total_percentage_black_women
+  #of the fatal shooting cases, 0.85% were black women, meaning they were less than one percent 
 
-#of the fatal shooting cases, 0.85% were black women, meaning they were less than one percent 
+#mutating the data to find the percentage of black women who were shot out of the total women 
 percentage_black_women <- police_shooting_women %>%
-  summarize(total_people = n()) %>%
-  mutate(women_black_count = sum(police_shooting_women$race == "B", na.rm = TRUE)) %>%
+  summarize(
+    total_people = n(),
+    women_black_count = sum(race == "B" & !is.na(race))) %>%
   mutate(percentage_black_women = (women_black_count / total_people) * 100)
-
 percentage_black_women
-#of the women population data, black women accounted for 19.35% of women who were shot fatally by the police
+  #of the women population data, black women accounted for 19.35% of women who were shot fatally by the police
 
 
-unarmed_black_women_final <- police_shooting_date %>%
-  summarize(total_people = n()) %>%
-  mutate(unarmed_black_women = sum(police_shooting_date$race == "B" & police_shooting_date$gender == "F" & police_shooting_date$armed == "unarmed", na.rm = TRUE)) %>%
-  mutate(unarmed_black_women = (unarmed_black_women / total_people) * 100)
+#create datasets for unarmed 
+unarmed_women_data <- police_shooting %>% 
+  select(gender, armed, date, race) %>% 
+  filter(armed=="unarmed", gender == "F", date < '2020-09-04')
 
+#find how many black women were among the unarmed females were fatally shot 
+unarmed_black_women_final <- unarmed_women_data %>%
+  summarize(
+    total_people = n(),
+    unarmed_black_women = sum(race == "B" & !is.na(race))) %>%
+  mutate(pct_unarmed_black_women = (unarmed_black_women / total_people) * 100)
 unarmed_black_women_final
-
-
-
-
-
-
+  #26.92% of black women were among the unarmed females who were fatally shot. 
 
 ```

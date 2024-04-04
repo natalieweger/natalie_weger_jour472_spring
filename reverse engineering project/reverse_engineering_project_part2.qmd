@@ -47,18 +47,18 @@ police_shooting_women <- police_shooting %>%
 ```{r}
 #finding the total rows of the data to see how many were shot 
 nrow(police_shooting_date)
-  #there are 5609 rows, meaning 5609 people were fatally shot by police between 2015 to 2020
+  #there are 5609 rows, meaning 5609 people were fatally shot by police between 2015 to 2020. this discrepancy is likely because the data from github was last      updated in 2022, so there have been updated shooting since then. 
 
 #finding the number of females in the data 
 sum(police_shooting_date$gender == "F", na.rm = TRUE)
-  #there are 248 rows, meaning that 248 females were fatally shot by police
+  #there are 248 rows, meaning that 248 females were fatally shot by police. this discrepancy from 247 is likely because the data from github was last updated in 2022, so there have been updated shooting since then. 
 
 #finding the number of women who identified as black in the women dataset
 police_shooting_women %>%
   select(name, armed, date, race) %>%
   filter (race == "B") %>%
   nrow()
-  #there are 48 rows, meaning that of the 248 females, 48 identified as black
+  #there are 48 rows, meaning that of the 248 females, 48 identified as black.
 
 #finding the number of women who were unarmed in the women dataset
 police_shooting_women %>%
@@ -80,7 +80,8 @@ total_percentage_black_women <- police_shooting_date %>%
     black_count = sum(race == "B" & gender == "F" & !is.na(race))) %>%
   mutate(total_percentage_black_women = (black_count / total_people) * 100)
 total_percentage_black_women
-  #of the fatal shooting cases, 0.85% were black women, meaning they were less than one percent 
+  #of the fatal shooting cases, 0.85% were black women, meaning they were less than one percent the washington post article said less than one percent, so if there is a discrepancy then it is likely because the data from github was last updated in 2022, so there have been updated shooting since then. 
+
 
 #mutating the data to find the percentage of black women who were shot out of the total women 
 percentage_black_women <- police_shooting_women %>%
@@ -89,7 +90,7 @@ percentage_black_women <- police_shooting_women %>%
     women_black_count = sum(race == "B" & !is.na(race))) %>%
   mutate(percentage_black_women = (women_black_count / total_people) * 100)
 percentage_black_women
-  #of the women population data, black women accounted for 19.35% of women who were shot fatally by the police
+  #of the women population data, black women accounted for 19.35% of women who were shot fatally by the police. the discrepancy from 20 percent is likely because the data from github was last updated in 2022, so there have been updated shooting since then. 
 
 
 #create datasets for unarmed 
@@ -104,6 +105,6 @@ unarmed_black_women_final <- unarmed_women_data %>%
     unarmed_black_women = sum(race == "B" & !is.na(race))) %>%
   mutate(pct_unarmed_black_women = (unarmed_black_women / total_people) * 100)
 unarmed_black_women_final
-  #26.92% of black women were among the unarmed females who were fatally shot. 
+  #26.92% of black women were among the unarmed females who were fatally shot. the discrepancy from 28 percent is likely because the data from github was last updated in 2022, so there have been updated shooting since then. 
 
 ```

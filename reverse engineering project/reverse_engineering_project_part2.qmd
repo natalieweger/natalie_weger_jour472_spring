@@ -2,6 +2,8 @@
 title: "Reverse Engineering Project Part 2"
 format: html
 editor: visual
+names: ela jalil and natalie weger
+date: 04/04/2024
 ---
 
 ## **Nearly 250 women have been fatally shot by police since 2015 - The Washington Post** 
@@ -34,10 +36,10 @@ Creating separate datasets for women and men who have been fatally shot by the p
 
 #Create datasets for just women and men 
 police_shooting_men<- police_shooting %>% 
-  select(gender, armed, date, race) %>% 
+  select(gender, armed, date, race, signs_of_mental_illness) %>% 
   filter(gender=="M", date <= '2020-09-04')
 police_shooting_women <- police_shooting %>% 
-  select(gender, armed, name, date, race) %>% 
+  select(gender, armed, name, date, race, signs_of_mental_illness) %>% 
   filter(gender=="F",date <='2020-09-04')
 
 ```
@@ -108,3 +110,61 @@ unarmed_black_women_final
   #26.92% of black women were among the unarmed females who were fatally shot. the discrepancy from 28 percent is likely because the data from github was last updated in 2022, so there have been updated shooting since then. 
 
 ```
+
+3\) As with fatal police shootings of men, the vast majority of the women killed were armed with a potential weapon at the time, although slightly less often: 89 percent of the women were armed, compared to 91 percent of the men.
+
+```{r}
+
+#We are first answering how many individuals were armed when they were fatally shot. We started with filtering the data by gender. We also filtered by the y/m/d to ensure that we had the same exact numbers as the article.
+
+#We are trying to figure out the armed status of individuals fatally shot: **As with fatal police shootings of men, the vast majority of the women killed were armed with a potential weapon at the time, although slightly less often: 89 percent of the women were armed, compared to 91 percent of the men.**
+
+#Determining who was armed
+armed_unarmedf <- police_shooting_women %>% 
+  mutate(
+    in_out = case_when(
+        armed == 'unarmed' ~ "unarmed",
+        armed != 'unarmed' ~ "armed",
+      )
+  )
+armed_unarmedf %>% 
+  count(in_out) 
+222/(222+26)
+
+armed_unarmedm <- police_shooting_men %>% 
+  mutate(
+    in_out =case_when(
+      armed == 'unarmed'~"unarmed",
+      armed != 'unarmed' ~ "armed",
+    )
+  )
+armed_unarmedm %>% 
+  count(in_out)
+5009/(5009+351)
+
+#With this analysis we are making one key assumption: that every individiual that is not unarmed is armed. This is sorting blanks and undetermined weapons into the armed category, which might slightly skew our data. However the result that we get through this data yields 89%, which is what is described in the data.The male data was slightly off - with our results yielding 93% compared to the 91% described in the article. The Github was last updated in 2022, which is the likely reason why there is a discrepancy in the data
+
+
+
+```
+
+4\) About 31 percent, or 77, of the 247 women fatally shot by police since 2015 had mental health issues, compared to 22 percent of the 5,362 men killed.
+
+```{r}
+
+#We are now answering the question of the mental health status of women and men. This is the finding we are trying to recreate: **About 31 percent, or 77, of the 247 women fatally shot by police since 2015 had mental health issues, compared to 22 percent of the 5,362 men killed.**
+
+police_shooting_women %>% 
+  count(signs_of_mental_illness)
+83/(165+83)
+#This yielded a result of 33% which is close to the results, and the discrepancy in numbers between 77 and 83 are likely due to the updated data in Github. 
+police_shooting_men %>% 
+  count(signs_of_mental_illness)
+1244/(4116+1244)
+
+#This result yielded a very close result of 23% compared to the 22% mentioned in the article. This discrepancy is likely from the updated data in Github.
+
+
+```
+
+Throughout this reverse engineering process we found that our results were almost completely accurate to the Washington Post findings. The discrepancies are likely attributed to new data found that was uploaded to Github.

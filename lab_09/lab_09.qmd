@@ -20,8 +20,9 @@ When you are finished, commit changes and push to your personal GitHub repo, the
 ```{r}
 library(tidyverse)
 library(janitor)
-library (sf)
+library(sf)
 library(leaflet)
+library(ggplot2)
 ```
 
 ## Load data
@@ -61,10 +62,10 @@ view(baltimore_shape_files)
 
 #classify different census tracts as majority white or not 
 majority_white <- baltimore_demographics %>%
-  mutate(pct_white = white_pop/total_pop) %>%
+  mutate(pct_white = (white_pop/total_pop*100)) %>%
   select(geoid,name,pct_white) %>%
   mutate(neighborhood_type = case_when(
-    pct_white > .50 ~ "majority_white",
+    pct_white > 50 ~ "majority_white",
     TRUE ~ "not_majority_white"
   ))
 
@@ -74,7 +75,26 @@ majority_white_join <- majority_white %>%
   inner_join(baltimore_shape_files) %>%
   st_as_sf()
 
-
-
+homicides_by_neighborhood <- baltimore_homicides %>%
+  st_join(majority_white_join) %>%
+  as_tibble()
   
+#create a table that organizes values into columns to mutate a column. this can show us how many cases are closed by arrest in majority white neighborhoods and non-majority white neighborhoods
+
+homicides_by_neighborhood %>%
+  group_by(neighborhood_type,disposition) %>%
+  count() %>%
+  pivot_wider(names_from=disposition, values_from=n) %>%
+  clean_names() %>%
+  mutate(total_shootings = closed_by_arrest+closed_without_arrest+open_no_arrest) %>%
+  mutate(unsolved = open_no_arrest + closed_without_arrest) %>%
+  mutate(pct_unsolved = unsolved/total_shootings*100)
+
+#this shows that 128 cases in majority white neighborhoods were closed by arrest while 874 neighborhoods were closed by arrest. 
+
+
+ggplot() +
+  geom_sf(data=baltimore_shape_files) +
+  geom_sf(data=baltimore_homicides, color = "red")
+#this output map plots the locations of homicides in baltimore in red. 
 ```

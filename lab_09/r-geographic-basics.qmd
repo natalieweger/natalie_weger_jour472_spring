@@ -1,14 +1,14 @@
 # Geographic data basics
 
-A common way data journalists look for patterns in data is geographically. 
+A common way data journalists look for patterns in data is geographically.
 
 Is there a spatial pattern to our data? Can we learn anything by using distance as a metric? What if we merge non-geographic data into geographic data?
 
 We'll use several libraries in this chapter:
 
-* Simple Features or SF
-* ggplot2 for static mapping visualization
-* leaflet for interactive mapping visualization
+-   Simple Features or SF
+-   ggplot2 for static mapping visualization
+-   leaflet for interactive mapping visualization
 
 ## Loading libraries
 
@@ -30,21 +30,21 @@ library(leaflet)
 
 Our motivating question for this chapter is this: do Prince George's County elementary schools in lower-income areas have lower attendance rate than elementary schools in wealthier areas?
 
-We'll visualize data to help us get insight into answer this question, followed by a more precise analysis. 
+We'll visualize data to help us get insight into answer this question, followed by a more precise analysis.
 
-We'll start by loading a file with the location of Prince George's County elementary schools. 
+We'll start by loading a file with the location of Prince George's County elementary schools.
 
-This is a special kind of dataframe called an "SF" dataframe, meaning it has location information embedded. The last column: "Geometry" has a pair of latitude and longitude coordinates that will allow us to map these. 
+This is a special kind of dataframe called an "SF" dataframe, meaning it has location information embedded. The last column: "Geometry" has a pair of latitude and longitude coordinates that will allow us to map these.
 
 ```{r}
 
-pg_elementary_school_locations <- read_rds("assets/data/pg_elementary_school_locations.rds")
+pg_elementary_school_locations <- read_rds("assets/pg_elementary_school_locations.rds")
 
 pg_elementary_school_locations
 
 ```
 
-Let's use ggplot to show the location of the schools, using a new function for us, geom_sf 
+Let's use ggplot to show the location of the schools, using a new function for us, geom_sf
 
 ```{r}
 
@@ -53,18 +53,17 @@ ggplot() +
 
 ```
 
-That's not super helpful.  If you know what the shape of Prince George's County looks like, you can make it out there in the dots, but it's hard.  
+That's not super helpful. If you know what the shape of Prince George's County looks like, you can make it out there in the dots, but it's hard.
 
-Let's load an outline of the county to make it more explicit. Unlike the schools, which are "points", the county outline is a "shape" or a "multipolygon." It's a collection of latitude and longitude pairs, with the dots connected. 
-
+Let's load an outline of the county to make it more explicit. Unlike the schools, which are "points", the county outline is a "shape" or a "multipolygon." It's a collection of latitude and longitude pairs, with the dots connected.
 
 ```{r}
 
-pg_county <- read_rds("assets/data/pg_county.rds")
+pg_county <- read_rds("assets/pg_county.rds")
 
 ```
 
-Let's add the PG county outline to our map. 
+Let's add the PG county outline to our map.
 
 ```{r}
 
@@ -74,7 +73,7 @@ ggplot() +
 
 ```
 
-We can visualize the school locations data on an interactive map, too, using the leaflet package. 
+We can visualize the school locations data on an interactive map, too, using the leaflet package.
 
 ```{r}
 
@@ -84,7 +83,7 @@ leaflet() %>%
   
 ```
 
-`addProviderTiles` adds the base map on which the dots appear.  `addCircles` adds the school locations. 
+`addProviderTiles` adds the base map on which the dots appear. `addCircles` adds the school locations.
 
 Let's update it to add the outline of P.G. County with `addPolygons`
 
@@ -97,7 +96,7 @@ leaflet() %>%
   
 ```
 
-We can even add little labels to each of the dots that includes the school name when we hover over each dot. 
+We can even add little labels to each of the dots that includes the school name when we hover over each dot.
 
 ```{r}
 
@@ -112,15 +111,15 @@ leaflet() %>%
 
 ## Augmenting geographic data
 
-We can join information about each school with our geographic data, and represent that on a map.  In this case, we're going to load data about the "attendance rate" from the Maryland Dept. of Education for each Prince George's County elementary school. It ranges from 99 percent to 79 percent.
+We can join information about each school with our geographic data, and represent that on a map. In this case, we're going to load data about the "attendance rate" from the Maryland Dept. of Education for each Prince George's County elementary school. It ranges from 99 percent to 79 percent.
 
 ```{r}
-attendance <- read_rds("assets/data/attendance.rds")
+attendance <- read_rds("assets/attendance.rds")
 
 attendance
 ```
 
-Now let's join this attendance dataframe to our spatial dataframe. 
+Now let's join this attendance dataframe to our spatial dataframe.
 
 The `st_as_sf()` function turns it back into a proper SF dataframe for visualization.
 
@@ -131,7 +130,7 @@ attendance_locations <- attendance %>%
 
 ```
 
-And let's visualize the data again, but this time, we'll let the attendance rate set the color value of the dots.  Immediately, we see the beginnings of a pattern.  Schools with higher attendance rates (lighter blue) are at right, in the more rural parts of the county. The schools with lower attendance rates (darker blue) are clustered to the left, closer the Washington, D.C. border. 
+And let's visualize the data again, but this time, we'll let the attendance rate set the color value of the dots. Immediately, we see the beginnings of a pattern. Schools with higher attendance rates (lighter blue) are at right, in the more rural parts of the county. The schools with lower attendance rates (darker blue) are clustered to the left, closer the Washington, D.C. border.
 
 ```{r}
 
@@ -145,26 +144,25 @@ ggplot() +
 
 Let's return to our motivating question for this chapter: do Prince George's County elementary schools in lower-income areas have lower attendance rates than elementary schools in wealthier areas?
 
-For geographic areas, we'll use Census tracts, and as a measure of income, we'll use median household income, which we'll load in a second. 
+For geographic areas, we'll use Census tracts, and as a measure of income, we'll use median household income, which we'll load in a second.
 
-To answer this question, we need to connect our dataframe of attendance by school to our dataframe of income by Census tract. 
+To answer this question, we need to connect our dataframe of attendance by school to our dataframe of income by Census tract.
 
-If our dataframe of schools with attendance had a column indicating which Census tract it was in, we could simply do a regular join to our dataframe of Census tract income. But it does not.  
+If our dataframe of schools with attendance had a column indicating which Census tract it was in, we could simply do a regular join to our dataframe of Census tract income. But it does not.
 
-Fortunately, there's still a way we join them, using a special kind of join that only works with geographic data -- a spatial join.  
+Fortunately, there's still a way we join them, using a special kind of join that only works with geographic data -- a spatial join.
 
-First, let's load a spatial dataframe of Census tracts with income information attached. 
-
+First, let's load a spatial dataframe of Census tracts with income information attached.
 
 ```{r}
 
-pg_tract_income <- read_rds("assets/data/pg_tract_income.rds")
+pg_tract_income <- read_rds("assets/pg_tract_income.rds")
 
 pg_tract_income
 
 ```
 
-Let's visualize it. We can see that, like the lower attendance rate schools, the lower income tracts tend to be clustered closer to Washington, D.C. 
+Let's visualize it. We can see that, like the lower attendance rate schools, the lower income tracts tend to be clustered closer to Washington, D.C.
 
 ```{r}
 
@@ -174,7 +172,7 @@ ggplot() +
 
 ```
 
-We can add schools shaded by attendance rate, but it's hard to derive much meaning from this map. 
+We can add schools shaded by attendance rate, but it's hard to derive much meaning from this map.
 
 ```{r}
 
@@ -185,9 +183,9 @@ ggplot() +
 
 ```
 
-To truly answer our question, we'll need to assign a Census tract to each school.  
+To truly answer our question, we'll need to assign a Census tract to each school.
 
-To do that, we'll connect our attendance data and our income data with a "spatial join" or `st_join()`. We see now that for each school, it has been assigned a Census tract. 
+To do that, we'll connect our attendance data and our income data with a "spatial join" or `st_join()`. We see now that for each school, it has been assigned a Census tract.
 
 ```{r}
 
@@ -198,11 +196,11 @@ income_to_attendance
 
 ```
 
-Here's what happened when we did `st_join`.  
+Here's what happened when we did `st_join`.
 
-The code looks at the latitude and longitude coordinates of each school and determines which Census tract shape it sits inside of.  If you're ever heard of "geocoding" an address to locate it on a map, the process is similar. 
+The code looks at the latitude and longitude coordinates of each school and determines which Census tract shape it sits inside of. If you're ever heard of "geocoding" an address to locate it on a map, the process is similar.
 
-From here, we can set about answering our question. We'll create a column called `attendance_bucket` that classifies each school into one of two buckets -- high attendance (top half) and low attendance (bottom half).  We then group by that new attendance bucket and calculate the average income in each of those groups. 
+From here, we can set about answering our question. We'll create a column called `attendance_bucket` that classifies each school into one of two buckets -- high attendance (top half) and low attendance (bottom half). We then group by that new attendance bucket and calculate the average income in each of those groups.
 
 ```{r}
 
@@ -219,14 +217,16 @@ income_to_attendance %>%
 
 ```
 
-And finally our answer.  Schools with high attendance are located in Census tracts that have, on average, an income of \$105,587.  Schools with low attendance are located in Census tracts that have, on average, income of \$80,261.
+And finally our answer. Schools with high attendance are located in Census tracts that have, on average, an income of \$105,587. Schools with low attendance are located in Census tracts that have, on average, income of \$80,261.
 
+**Question #1:** Answer this question in English: Write in Elms
 
-**Question #1: **
-Answer this question in English: Write in Elms
+Develop two questions that you could answer with a spatial join as described in this chapter, outside of the domain of education. Briefly describe the two geographic dataframes you would need to answer each question.
 
-Develop two questions that you could answer with a spatial join as described in this chapter, outside of the domain of education.  Briefly describe the two geographic dataframes you would need to answer each question.   
+Two geographic dataframes that I would need to answer my questions would be the PG County dataframe, the median household income of different areas in Prince George's County and the distribution of white people within the county?
 
+I would ask the questions:
 
+1\) Are there any significant findings about if the distribution of white people are located in high or low median income areas of Prince George's County?
 
-
+2\) Are there any increases or decreases overtime in median income to areas of Prince George's County that have a population of over 50% people of color?

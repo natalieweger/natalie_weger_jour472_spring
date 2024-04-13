@@ -1,11 +1,8 @@
-#lab_11
-Rob Wells, April 11, 2024
+#lab_11 Rob Wells, April 11, 2024
 
 ## About this lab
 
-To complete this lab, you need to:
-* write code in empty codeblocks provided to answer questions included (look for **Q**).
-* write out the answer in the form of a complete sentence in the space given (look for **A**).
+To complete this lab, you need to: \* write code in empty codeblocks provided to answer questions included (look for **Q**). \* write out the answer in the form of a complete sentence in the space given (look for **A**).
 
 When you are finished, commit changes and push to your personal GitHub repo, then submit the URL to this document on ELMS.
 
@@ -13,18 +10,17 @@ When you are finished, commit changes and push to your personal GitHub repo, the
 
 There are three main goals of this lab:
 
-* learn to make use of R packages that can access data via third-party APIs.
-* learn to develop a quick and accurate understanding of what data can be obtained via third-party APIs. 
-* learn to develop questions that can be answered using that data, and avoid developing questions that cannot. 
+-   learn to make use of R packages that can access data via third-party APIs.
+-   learn to develop a quick and accurate understanding of what data can be obtained via third-party APIs.
+-   learn to develop questions that can be answered using that data, and avoid developing questions that cannot.
 
 ## APIs to choose from
- 
 
-* tidycensus - for asking census-related questions.
+-   tidycensus - for asking census-related questions.
 
 ## Load libraries
 
-**Task**: load the tidyverse and janitor.  Uncomment the one other package you plan to work with.  Do not choose more than one API package.
+**Task**: load the tidyverse and janitor. Uncomment the one other package you plan to work with. Do not choose more than one API package.
 
 ```{r}
 library(tidyverse)
@@ -34,7 +30,7 @@ library(janitor)
 # tidycensus
 ###
 
-# library(tidycensus)
+library(tidycensus)
 
 ```
 
@@ -42,21 +38,19 @@ library(janitor)
 
 ### tidycensus
 
-Use the U.S. census access token you created for this week's lab.  You can store it by editing the block below to replace 'YOUR KEY HERE' with your actual key, a long string of letters and numbers. If you need to sign up for another one, you can do so here:  [apply for an API key with the Census Bureau](https://api.census.gov/data/key_signup.html). 
+Use the U.S. census access token you created for this week's lab. You can store it by editing the block below to replace 'YOUR KEY HERE' with your actual key, a long string of letters and numbers. If you need to sign up for another one, you can do so here: [apply for an API key with the Census Bureau](https://api.census.gov/data/key_signup.html).
 
 ```{r}
-census_api_key("YOUR KEY HERE", install=TRUE)
+census_api_key("275c92ecf966417aec509ef232bf2fbc618b17e6", overwrite=TRUE)
 ```
-
-
 
 ### tidycensus
 
 This package is designed to help you pull demographic information about different U.S. geographies.
 
-* Basic usage https://walker-data.com/tidycensus/articles/basic-usage.html
-* Functions: https://walker-data.com/tidycensus/reference/index.html
-* More details https://walker-data.com/tidycensus/
+-   Basic usage https://walker-data.com/tidycensus/articles/basic-usage.html
+-   Functions: https://walker-data.com/tidycensus/reference/index.html
+-   More details https://walker-data.com/tidycensus/
 
 Sample question: which state saw the largest growth in Hispanic population between 2010 and 2020?
 
@@ -66,7 +60,7 @@ Sample question: which state saw the largest growth in Hispanic population betwe
 # Load ACS variables
 ###
 
-acs_vars <- load_variables("acs5")
+acs_vars <- load_variables(dataset = "acs5", year = 2020)
 
 ###
 # Get median household income for Maryland 2020
@@ -82,7 +76,60 @@ md <- get_acs(geography = "county",
 
 ### Develop and answer questions
 
-**Task** Develop two different *interesting* questions that you can answer with the data. Run them by your professor before getting started on answering, to ensure they're sufficiently interesting and possible with the data. 
+**Task** Develop two different *interesting* questions that you can answer with the data. Run them by your professor before getting started on answering, to ensure they're sufficiently interesting and possible with the data.
 
-**Task** Write code to answer the questions.  Write up a sentence with each of your findings. Produce at least one visualization to support one of your findings. 
+```{r}
 
+#1) Which state has the largest increase in Hispanic population?
+
+#Creating datasets for the hispanic population in 2020
+hispanic_2020 <- get_acs(geography = "state",
+              variables = c(hispanic_pop = "B01001I_001"),
+              year = 2020) 
+hispanic_2010 <- get_acs(geography = "state",
+              variables = c(hispanic_pop = "B01001I_001"),
+              year = 2010)
+
+#Joining the datasets together 
+total_hispanic <- hispanic_2010 %>%
+  inner_join(hispanic_2020, by="GEOID")
+
+#Rename the columns 
+colnames(total_hispanic)[4] <- "hispanic_2010"
+colnames(total_hispanic)[8] <- "hispanic_2020"
+
+#Mutate the data for the percentage
+updated_total_hispanic <-total_hispanic %>% 
+  mutate(pct_change_hispanic = (hispanic_2020-hispanic_2010)/(hispanic_2010)*100) %>% 
+  arrange(desc(pct_change_hispanic))
+
+#North Dakota had the largest percentage increase in Hispanic population between 2010 to 2020 from 12878 to 30325 with about %135 increase. 
+
+#2) Which state had the greatest decrease in Black population?
+
+#Creating datasets for the hispanic population in 2020
+black_2020 <- get_acs(geography = "state",
+              variables = c(black_pop = "B01001B_001"),
+              year = 2020) 
+black_2010 <- get_acs(geography = "state",
+              variables = c(black_pop = "B01001B_001"),
+              year = 2010)
+
+#Joining the datasets together 
+total_black <- black_2010 %>%
+  inner_join(black_2020, by="GEOID")
+
+#Rename the columns 
+colnames(total_black)[4] <- "black_2010"
+colnames(total_black)[8] <- "black_2020"
+
+#Mutate the data for the percentage
+updated_total_black <-total_black %>% 
+  mutate(pct_change_black = (black_2020-black_2010)/(black_2010)*100) %>% 
+  arrange(pct_change_black))
+view(updated_total_black)
+
+#North Dakota had the largest percentage increase in Asian population between 2010 to 2020 from 12878 to 30325 with about %135 increase. 
+```
+
+**Task** Write code to answer the questions. Write up a sentence with each of your findings. Produce at least one visualization to support one of your findings.

@@ -126,10 +126,10 @@ colnames(total_black)[8] <- "black_2020"
 #Mutate the data for the percentage
 updated_total_black <-total_black %>% 
   mutate(pct_change_black = (black_2020-black_2010)/(black_2010)*100) %>% 
-  arrange(pct_change_black))
+  arrange(pct_change_black)
 view(updated_total_black)
 
-#North Dakota had the largest percentage increase in Asian population between 2010 to 2020 from 12878 to 30325 with about %135 increase. 
+#Illinois had the largest percentage decrease in Black population between 2010 to 2020 from 1860305 to 1796660 with about %3 decrease. 
 ```
 
 **Task** Write code to answer the questions. Write up a sentence with each of your findings. Produce at least one visualization to support one of your findings.

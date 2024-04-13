@@ -1,6 +1,8 @@
-# Math - Percentage of Whole Calculations
+
+# Math - Percentage of Whole Calculations 
 
 Here are a few refresher exercises for doing math calculations within the code.
+
 
 ```{r}
 library(tidyverse)
@@ -14,18 +16,13 @@ We'll import a dataset of median household income in Baltimore for the 2010, 201
 
 baltcity_income<- read_csv("https://raw.githubusercontent.com/wellsdata/data_journalism_class/main/04_labs/lab_05/pre_lab_05/baltcity_income_clean.csv") %>% 
   as.data.frame()
-```
 
-Let's see which neighborhoods are the largest on a percentage basis in 2020
+
+```
+Let's see which neighborhoods are the largest on a percentage basis in 2020 
 
 ```{r}
 
-baltcity_income %>%
-  select (Census, Neighborhood, x2020) %>%
-  total_income = sum(x2020, na.rm = TRUE) %>%
-  mutate (pct_whole = (x2020/total_income)) 
-
-view(pct_whole)
 
 ```
 

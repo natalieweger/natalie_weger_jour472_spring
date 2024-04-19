@@ -63,6 +63,8 @@ gov_race_results <- gov_race_results[[1]] %>%
   arrange(pct_election_day) %>%  
   select(name, pct_election_day) 
   view(gov_race_results)
+  
+#Wes More got the lowest percentage of votes on election day with 44.28% while Dan Cox got 66.24%. 
 ```
 
 **Q2** How many counties did Chris Van Hollen win in Maryland's Senate race?
@@ -74,6 +76,7 @@ clean_names() %\>%
 
 ```{r}
 
+#Load data 
 
 senate_race_results <- "https://elections.maryland.gov/elections/2022/general_results/gen_detail_results_2022_4_1.html"
 
@@ -82,6 +85,7 @@ senate_race_results <- "https://elections.maryland.gov/elections/2022/general_re
 senate_race_results <- senate_race_results %>%   
   read_html() %>%   
   html_table() 
+
 #Extract dataframe, clean number columns, calculate pct on election day vote
 
 senate_race_results <- senate_race_results[[1]] %>%  
@@ -112,6 +116,7 @@ count_van_hollen <- senate_race_results %>%
 
 ```{r}
 
+#loaded the data from Maryland's weathiest counties and sort by median 
 acs_vars <- load_variables("acs5", year=2020)
 
 md <- get_acs(geography = "county",
@@ -120,11 +125,15 @@ md <- get_acs(geography = "county",
               year = 2020) %>%
 arrange(desc(estimate))
 
+#Howard County is Maryland's wealthiest county 
+
 senate_race_results <- senate_race_results %>%
   mutate(percent_hollen = (chris_van_hollen_democratic / (chris_chaffee_republican + chris_van_hollen_democratic + scottie_griffin_write_in_democratic + andrew_j_wildman_write_in_unaffiliated + other_write_ins))*100) 
 
 senate_race_results <- senate_race_results %>% 
   filter (jurisdiction == "Howard")
+
+#Mutated a column to show the percentage of a whole that Van Hollen won for Howard County, which was about 70.9%.  
 
 
 

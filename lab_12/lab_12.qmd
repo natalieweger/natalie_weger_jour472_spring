@@ -133,7 +133,7 @@ senate_race_results <- senate_race_results %>%
 senate_race_results <- senate_race_results %>% 
   filter (jurisdiction == "Howard")
 
-#Mutated a column to show the percentage of a whole that Van Hollen won for Howard County, which was about 70.9%.  
+#Mutated a column to show the percentage of a whole that Van Hollen won for Howard County. This means that Van Hollen got a vote of about 70.9% in Maryaland's wealthiest county of Howard County. 
 
 
 

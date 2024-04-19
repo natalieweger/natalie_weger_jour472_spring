@@ -1,6 +1,5 @@
 #Tutorial, April 16, 2024
 
-
 ```{r}
 library(tidyverse)
 library(janitor)
@@ -11,7 +10,6 @@ library(janitor)
 library(tidycensus)
 
 ```
-
 
 ```{r}
 census_api_key("xyz", install=TRUE, overwrite=TRUE)
@@ -38,6 +36,7 @@ md <- get_acs(geography = "county",
 ```
 
 #Load Data
+
 ```{r}
 
 asian_2020 <- get_acs(geography = "state",
@@ -52,15 +51,27 @@ asian_2010 <- get_acs(geography = "state",
 
 ```
 
-
 #Join the two data frames together, create a percentage change column
+
 ```{r}
 #You want to avoid this:
 #(estimate.y-estimate.x)/(estimate.x)
 
+
+total_asian2 <- asian_2010 %>%
+  inner_join(asian_2020, by=c("GEOID", "NAME")) %>% 
+  select(GEOID, NAME, estimate_2010, estimate_2020) 
+
+total_asian2 <-total_asian2 %>% mutate(change_asian = (estimate_2020-estimate_2010)/(estimate_2010)*100) %>% 
+  arrange(desc(change_asian))
+
+view(total_asian2)
+
+
 ```
 
 #Pivot Wider
+
 ```{r}
 
 # See vignette("pivot") for examples and explanation
@@ -85,7 +96,6 @@ us_rent_income %>%
 
 ```
 
-
 #2: Male Population and Pivot Wider
 
 ```{r}
@@ -94,9 +104,16 @@ us_rent_income %>%
 # total_pop = "B01001_001"
 
 
+male <- get_acs(geography = "state",
+                           variables = c(male_pop = "B01001_002", total_pop = "B01001_001"),
+                           year = 2020) %>%
+                  rename(state = NAME) %>%
+  select(state, variable, estimate) %>%
+  pivot_wider(names_from = variable, values_from = estimate) %>%
+  mutate(pct_male = male_pop/total_pop) %>%
+  arrange(desc(pct_male))
 
+  
 
 
 ```
-
-

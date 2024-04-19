@@ -1,11 +1,15 @@
-#lab_12
-Sean Mussenden, Aug 16, 2022
+---
+editor: 
+  markdown: 
+    wrap: sentence
+---
+
+#lab_12 Sean Mussenden, Aug 16, 2022
 
 ## About this lab
 
-To complete this lab, you need to:
-* write code in empty codeblocks provided to answer questions included (look for **Q**).
-* write out the answer in the form of a complete sentence in the space given (look for **A**).
+To complete this lab, you need to: \* write code in empty codeblocks provided to answer questions included (look for **Q**).
+\* write out the answer in the form of a complete sentence in the space given (look for **A**).
 
 When you are finished, commit changes and push to your personal GitHub repo, then submit the URL to this document on ELMS.
 
@@ -13,24 +17,115 @@ When you are finished, commit changes and push to your personal GitHub repo, the
 
 There is one main goal of this lab:
 
-* To apply your knowledge of basic web scraping.
-* To integrate scraped data with other data pulled from API packages.
+-   To apply your knowledge of basic web scraping.
+-   To integrate scraped data with other data pulled from API packages.
 
-You will do this by scraping data from the Maryland State Board of Election website, and connecting it with U.S. Census data pulled from the Tidycensus package to answer questions that can be answered with one or more data sets. 
+You will do this by scraping data from the Maryland State Board of Election website, and connecting it with U.S.
+Census data pulled from the Tidycensus package to answer questions that can be answered with one or more data sets.
 
 You can find election results here: https://elections.maryland.gov/elections/2022/general_results/
 
 ## Load libraries and settings
 
-**Task**: load the tidyverse, tidycensus, rvest and janitor.  Store your Census api key.
+**Task**: load the tidyverse, tidycensus, rvest and janitor.
+Store your Census api key.
+
+```{r}
+library(tidyverse)
+library(rvest)
+library(janitor)
+```
 
 ## Questions
 
-**Q1** Which candidate, Dan Cox or Wes Moore, got the lowest percentage of their votes on Election Day? What does that suggest? Write up your answer in a sentence. 
+**Q1** Which candidate, Dan Cox or Wes Moore, got the lowest percentage of their votes on Election Day?
+What does that suggest?
+Write up your answer in a sentence.
 **A1**
 
-**Q2** How many counties did Chris Van Hollen win in Maryland's Senate race? 
-**A2** 
+```{r}
 
-**Q3** What percentage of the vote did Chris Van Hollen in Maryland's wealthiest county by median income. (You must use the Tidycensus package to answer this question).
-**A3** 
+gov_race_results <- "https://elections.maryland.gov/elections/2022/general_results/gen_results_2022_1.html"
+
+# Read in results as html table
+
+gov_race_results <- gov_race_results %>%   
+  read_html() %>%   
+  html_table() 
+
+#Extract dataframe, clean number columns, calculate pct on election day vote
+
+gov_race_results <- gov_race_results[[1]] %>%  
+  clean_names() %>%  
+  mutate(across(c(2,3,4,5,6,7,8), parse_number)) %>%  
+  mutate(pct_election_day = round(election_day/total*100,2)) %>%  
+  slice(-7) %>%  
+  arrange(pct_election_day) %>%  
+  select(name, pct_election_day) 
+  view(gov_race_results)
+```
+
+**Q2** How many counties did Chris Van Hollen win in Maryland's Senate race?
+**A2**
+
+senate_race_results \<- senate_race_results\[\[1\]\] %\>%
+
+clean_names() %\>%
+
+```{r}
+
+
+senate_race_results <- "https://elections.maryland.gov/elections/2022/general_results/gen_detail_results_2022_4_1.html"
+
+# Read in results as html table
+
+senate_race_results <- senate_race_results %>%   
+  read_html() %>%   
+  html_table() 
+#Extract dataframe, clean number columns, calculate pct on election day vote
+
+senate_race_results <- senate_race_results[[1]] %>%  
+  clean_names() %>%
+  slice(-25)%>%
+  mutate(across(c(2:6), parse_number)) %>%
+  select(jurisdiction, chris_van_hollen_democratic, chris_chaffee_republican, scottie_griffin_write_in_democratic, andrew_j_wildman_write_in_unaffiliated, other_write_ins)%>%
+  mutate(
+    senate_results = case_when(
+      chris_van_hollen_democratic >= chris_chaffee_republican ~ "Van Hollen",
+      TRUE ~ "Chris Chaffee"
+    )
+  ) 
+
+count_van_hollen <- senate_race_results %>%
+  filter(senate_results == "Van Hollen") %>%
+  nrow()
+  
+
+#Van Hollen won 10 counties in the Maryland Senate race -- Anne Arundel, Baltimore City, Baltimore County, Charles, Frederick, Howard, Kent, Montgomery, Prince George's and Talbot. 
+```
+
+\
+
+**Q3** What percentage of the vote did Chris Van Hollen win in Maryland's wealthiest county by median income.
+(You must use the Tidycensus package to answer this question).
+**A3**
+
+```{r}
+
+acs_vars <- load_variables("acs5", year=2020)
+
+md <- get_acs(geography = "county",
+              variables = c(median_income = "B19013_001"),
+              state = "MD",
+              year = 2020) %>%
+arrange(desc(estimate))
+
+senate_race_results <- senate_race_results %>%
+  mutate(percent_hollen = (chris_van_hollen_democratic / (chris_chaffee_republican + chris_van_hollen_democratic + scottie_griffin_write_in_democratic + andrew_j_wildman_write_in_unaffiliated + other_write_ins))*100) 
+
+senate_race_results <- senate_race_results %>% 
+  filter (jurisdiction == "Howard")
+
+
+
+```

@@ -10,8 +10,6 @@ editor: visual
 
 ## Data Analysis Project Part 2
 
-What commodities and businesses are affected by the Baltimore port, and consequently, the Francis Scott Key
-
 ```{r}
 
 #loading libraries 

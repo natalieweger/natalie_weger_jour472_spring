@@ -1,0 +1,119 @@
+---
+title: "weger_final_project"
+format: html
+editor: visual
+---
+
+## Data Analysis Project Part 2
+
+What commodities and businesses are affected by the Baltimore port, and consequently, the Francis Scott Key
+
+```{r}
+
+#loading libraries 
+library(rvest)
+library(tidyverse)
+library(janitor)
+
+```
+
+The first question I will answer is: What are the Baltimore jobs are related directly to the port and what are their median income? This question is newsworthy because it presents the question of how different types of jobs and incomes will be impacted in light of the Baltimore bridge collapse.
+
+The first dataset that I've used is called the Baltimore Port Jobs, which I took from The 2023 Economic Impact of the Port of Baltimore in Maryland. I used Adobe Acrobat to extract the data from the website and then download it into a CSV file. The data shows the number of total direct jobs that are associated with the Baltimore port. The second dataset that I've collected is the Occupational Data that is provided by the U.S. Bureau of Labor Statistics. This dataset is put into a CSV that will show the median income of different types of jobs in Maryland.
+
+To address the question of how the Baltimore bridge collapse could have potentially affected jobs in the port, I cleaned both datasets and joined them to create a table that shows the amount of direct jobs affected by the port, and the (most likely) median income of these jobs. This step has allowed me to set up my data for this project, However, I will have to look into this further to ensure that I am matching each income to the job titles, and also finding the right jobs from the Labor Statistics data to match with the type of port jobs.
+
+```{r}
+
+#import baltimore jobs related to the port 
+baltimore_port_jobs <- read_csv("baltimore_port_jobs.csv") %>%
+clean_names() 
+
+#clean column names and unnecessary columns
+names(baltimore_port_jobs)[1] <- "job_types"
+baltimore_port_jobs <- baltimore_port_jobs[, -5]
+
+#delete unecessary rows with null values and totals row 
+baltimore_port_jobs <- baltimore_port_jobs[-c(1, 4, 16, 17), ]
+
+
+#import the mean incomes of different jobs in maryland 
+maryland_jobs <- read_csv("maryland_jobs.csv") %>%
+  
+#clean the dataset names 
+clean_names() 
+names(maryland_jobs)[1] <- "state"
+
+#take out columns so that it just displays annual and hourly mean income 
+maryland_jobs <- maryland_jobs[,-c(4,7, 8) ]
+
+
+
+#using case_when to change the job names from maryland job data to match names of jobs in  baltimore port
+maryland_jobs <- maryland_jobs %>%
+  mutate(
+    occ_title = case_when(
+      occ_title == "Railroad Brake, Signal, and Switch Operatorand Locomotive Firers"   ~ "Rail",
+      occ_title == "Heavy and Tractor-Trailer Truck Drivers"   ~ "Truck",
+      occ_title == "Captains, Mates, and Pilotof Water Vessels"   ~ "Pilots",
+      occ_title == "Construction Laborers"   ~ "Maritime Services/Construction",
+      occ_title == "Helpers, Construction Trades, All Other"   ~ "Warehouse",
+      occ_title == "Shipping, Receiving, and Inventory Clerks"   ~ "DEPENDENT SHIPPERS/CONSIGNEES",
+      TRUE                 ~ occ_title 
+    )
+  )
+
+#i couldn't find about half of the names of baltimore port jobs and properly match to maryland jobs just yet (including terminal, ILA/dockworkers, tug assist/barge, freight forwarders, government, maryland port administration)
+
+#creating a dataset from the maryland jobs database with just these new occupations 
+updated_maryland_jobs <- maryland_jobs %>%
+   select(occ_title, a_mean) %>% 
+   filter(occ_title %in% c("Rail","Truck","Pilots","Maritime Services/Construction", "Warehouse", "DEPENDENT SHIPPERS/CONSIGNEES"))
+
+#create a new dataset with the updated baltimore port jobs that can match the maryland jobs,so that i can do an inner join between the two 
+updated_baltimore_jobs <- baltimore_port_jobs %>%
+   select(job_types, total_direct_jobs) %>% 
+   filter(job_types %in% c("Rail","Truck","Pilots","Maritime Services/Construction","Warehouse", "DEPENDENT SHIPPERS/CONSIGNEES"))
+
+#inner join the updated maryland wages and job amounts 
+inner_join_table <- updated_maryland_jobs %>%
+  inner_join(updated_baltimore_jobs, by = c("occ_title" = "job_types"))
+
+view(inner_join_table)
+```
+
+The next question that I will answer will be: what are the direct jobs associated with different commodities related to the port? This will be newsworthy as it examines the amount of jobs, associated with different commodities, and how it could be affected by the Baltimore bridge collapse. I was also able to find this dataset from The 2023 Economic Impact of the Port of Baltimore in Maryland. I used Adobe Acrobat to extract the data from the website and then download it into a CSV file. I then cleaned the data and arranged it in descending order to show the total direct jobs, by commodity, that are affected by the port.
+
+```{r}
+
+#load baltimore commodity data 
+bmore_commodities <- read_csv("bmore_commodities.csv") %>%
+  
+#clean the data to make the column names lowercase and to take away the ".000" decimals 
+clean_names() 
+bmore_commodities$private_direct_jobs <- round(bmore_commodities$private_direct_jobs)
+
+#remove totals row 
+bmore_commodities <- bmore_commodities[-c(14), ]
+
+#arrange the amoutn of direct jobs in descending order 
+bmore_commodities <- bmore_commodities %>%
+ arrange(desc(total_direct_jobs))
+ 
+view(bmore_commodities)
+
+```
+
+The final question that I will answer for this project is: How many jobs in different Maryland counties are affected by the port? To answer this question, I used data from The 2023 Economic Impact of the Port of Baltimore in Maryland. Again, I used Adobe Acrobat to extract the data from the website and then download it into a CSV file. After cleaning up unnecessary rows in the data, I was able to find amount of direct jobs from the port that are in different counties of Maryland. This will allow me to see the scope of the port's impact and how it affects employment and jobs beyond Baltimore.
+
+```{r}
+#import county data 
+port_counties <- read_csv("port_counties.csv") %>%
+clean_names() 
+
+#delete the total row and county row
+port_counties <- port_counties[-c(2, 9), ]
+
+
+view(port_counties)
+```

@@ -119,6 +119,8 @@ And paste the repo directory and html file name to the end of that string
 
 https://YOURUSERNAME.github.io/YOUR-REPO-FOLDER-NAME/YOUR-FILE-NAME.html
 
+https://natalieweger.github.io/[natalie_weger_jour472_spring/lab_13/Hosting_GitHub_Page.html](https://github.com/natalieweger/natalie_weger_jour472_spring/blob/main/lab_13/Hosting_GitHub_Page.html)
+
 and you should have your hosted file!
 
 **Get rid of extraneous words such as "blob" and just use your file name, ie: Hosting_GitHub_Page.html**

@@ -16,6 +16,7 @@ editor: visual
 library(rvest)
 library(tidyverse)
 library(janitor)
+library(dplyr)
 
 ```
 
@@ -27,61 +28,77 @@ To address the question of how the Baltimore bridge collapse could have potentia
 
 ```{r}
 
-#import baltimore jobs related to the port 
+#import baltimore jobs related to the port, rename the jobs column and then take out unnecessary rows/columns 
 baltimore_port_jobs <- read_csv("baltimore_port_jobs.csv") %>%
-clean_names() 
+clean_names() %>%
+  
+#take out unnecessary rows/columns 
+rename(job_types = 1) %>% 
+subset(select = -c(5))
+baltimore_port_jobs <- slice(baltimore_port_jobs, -c(1,4,16,17))
 
-#clean column names and unnecessary columns
-names(baltimore_port_jobs)[1] <- "job_types"
-baltimore_port_jobs <- baltimore_port_jobs[, -5]
-
-#delete unecessary rows with null values and totals row 
-baltimore_port_jobs <- baltimore_port_jobs[-c(1, 4, 16, 17), ]
-
+#clean the names under the job_titles column
+baltimore_port_jobs$job_types <- tolower(gsub("[ /]", "_", baltimore_port_jobs$job_types))
 
 #import the mean incomes of different jobs in maryland 
 maryland_jobs <- read_csv("maryland_jobs.csv") %>%
   
 #clean the dataset names 
-clean_names() 
-names(maryland_jobs)[1] <- "state"
+clean_names() %>%
+rename(state = 1) %>% 
 
-#take out columns so that it just displays annual and hourly mean income 
-maryland_jobs <- maryland_jobs[,-c(4,7, 8) ]
+#take out columns so that it just displays annual mean income 
+subset(select = -c(2,4,5,7,8))
 
+#filter out all rows where there is a null value for annual mean data 
+sum(is.na(maryland_jobs$a_mean))
+maryland_jobs <- maryland_jobs %>%
+  filter(a_mean != "#" & a_mean != "*")
 
-
-#using case_when to change the job names from maryland job data to match names of jobs in  baltimore port
+#use mutate to create a new column called occ_title_2 and change the job names from maryland job data to match names of jobs in  baltimore port
 maryland_jobs <- maryland_jobs %>%
   mutate(
-    occ_title = case_when(
-      occ_title == "Railroad Brake, Signal, and Switch Operatorand Locomotive Firers"   ~ "Rail",
-      occ_title == "Heavy and Tractor-Trailer Truck Drivers"   ~ "Truck",
-      occ_title == "Captains, Mates, and Pilotof Water Vessels"   ~ "Pilots",
-      occ_title == "Construction Laborers"   ~ "Maritime Services/Construction",
-      occ_title == "Helpers, Construction Trades, All Other"   ~ "Warehouse",
-      occ_title == "Shipping, Receiving, and Inventory Clerks"   ~ "DEPENDENT SHIPPERS/CONSIGNEES",
+    occ_title_2 = case_when(
+      occ_title == "Railroad Brake, Signal, and Switch Operatorand Locomotive Firers"   ~ "rail",
+      occ_title == "Heavy and Tractor-Trailer Truck Drivers"   ~ "truck",
+      occ_title == "Captains, Mates, and Pilotof Water Vessels"   ~ "pilots",
+      occ_title == "Construction Laborers"   ~ "maritime_services_construction",
+      occ_title == "Helpers, Construction Trades, All Other"   ~ "warehouse",
+      occ_title == "Shipping, Receiving, and Inventory Clerks"   ~ "dependent_shippers_consignees",
+      occ_title == "Laborerand Freight, Stock, and Material Movers, Hand"   ~ "freight_forwarders",
       TRUE                 ~ occ_title 
     )
   )
 
-#i couldn't find about half of the names of baltimore port jobs and properly match to maryland jobs just yet (including terminal, ILA/dockworkers, tug assist/barge, freight forwarders, government, maryland port administration)
+
+#i couldn't find about half of the names of baltimore port jobs and properly match to maryland jobs just yet (including terminal, ILA/dockworkers, tug assist/barge, government, maryland port administration)
+
+#container people will be truckers, warehouse workers, freight people 
 
 #creating a dataset from the maryland jobs database with just these new occupations 
 updated_maryland_jobs <- maryland_jobs %>%
-   select(occ_title, a_mean) %>% 
-   filter(occ_title %in% c("Rail","Truck","Pilots","Maritime Services/Construction", "Warehouse", "DEPENDENT SHIPPERS/CONSIGNEES"))
+   select(occ_title_2, a_mean) %>% 
+   filter(occ_title_2 %in% c("rail","truck","pilots","maritime_services_construction", "warehouse", "dependent_shippers_consignees", "freight_forwarders"))
 
 #create a new dataset with the updated baltimore port jobs that can match the maryland jobs,so that i can do an inner join between the two 
 updated_baltimore_jobs <- baltimore_port_jobs %>%
    select(job_types, total_direct_jobs) %>% 
-   filter(job_types %in% c("Rail","Truck","Pilots","Maritime Services/Construction","Warehouse", "DEPENDENT SHIPPERS/CONSIGNEES"))
+   filter(job_types %in% c("rail","truck","pilots","maritime_services_construction", "warehouse", "dependent_shippers_consignees", "freight_forwarders"))
 
 #inner join the updated maryland wages and job amounts 
 inner_join_table <- updated_maryland_jobs %>%
-  inner_join(updated_baltimore_jobs, by = c("occ_title" = "job_types"))
+  inner_join(updated_baltimore_jobs, by = c("occ_title_2" = "job_types"))
 
 view(inner_join_table)
+
+#what is the median income of all maryland jobs?
+maryland_median_income <- median(maryland_jobs$a_mean)
+view(median_income)
+#the median income of all maryland jobs is 47,360
+
+
+baltimore_median_income <- median(inner_join_table$a_mean)
+view(baltimore_median_income)
 ```
 
 The next question that I will answer will be: what are the direct jobs associated with different commodities related to the port? This will be newsworthy as it examines the amount of jobs, associated with different commodities, and how it could be affected by the Baltimore bridge collapse. I was also able to find this dataset from The 2023 Economic Impact of the Port of Baltimore in Maryland. I used Adobe Acrobat to extract the data from the website and then download it into a CSV file. I then cleaned the data and arranged it in descending order to show the total direct jobs, by commodity, that are affected by the port.
@@ -91,12 +108,20 @@ The next question that I will answer will be: what are the direct jobs associate
 #load baltimore commodity data 
 bmore_commodities <- read_csv("bmore_commodities.csv") %>%
   
-#clean the data to make the column names lowercase and to take away the ".000" decimals 
-clean_names() 
-bmore_commodities$private_direct_jobs <- round(bmore_commodities$private_direct_jobs)
+#clean the data to make the column names lowercase 
+clean_names() %>%
+
+#remove other columns to just show total direct jobs 
+subset(select = -c(2,3))
+
+#take away the ".000" decimals 
+bmore_commodities$total_direct_jobs <- round(bmore_commodities$total_direct_jobs)
 
 #remove totals row 
-bmore_commodities <- bmore_commodities[-c(14), ]
+bmore_commodities <- slice(bmore_commodities, -c(14))
+
+#make commodity values lowercase
+bmore_commodities$commodities <- tolower(gsub("[ /]", "_", bmore_commodities$commodities))
 
 #arrange the amoutn of direct jobs in descending order 
 bmore_commodities <- bmore_commodities %>%
@@ -114,8 +139,30 @@ port_counties <- read_csv("port_counties.csv") %>%
 clean_names() 
 
 #delete the total row and county row
-port_counties <- port_counties[-c(2, 9), ]
+port_counties <- slice(port_counties, -c(2,9))
 
+#make counties lowercase
+port_counties$jurisdiction <- tolower(gsub(" ", "_", port_counties$jurisdiction))
 
 view(port_counties)
 ```
+
+**Findings:**
+
+**Question One:**
+
+There are about 19,970 direct jobs that are related to the Baltimore Port split into 12 different categories. Of those categories, I was able to match seven of them with median incomes through the Maryland jobs database. However, I was unable to match the other five (terminal, ILA/dockworkers, tug assist/barge, government, Maryland Port Administration). 
+
+Of the seven Baltimore port jobs I found, the median annual income for those jobs is about \$38,940. However, the median annual income of all Maryland jobs is about \$47,360. Although the median income of Baltimore port jobs is lower than the average Maryland job median income, this is probably because higher-paying port jobs, such as government and the Maryland Port Administration, were excluded from the calculation. 
+
+These results raise the question of how the Baltimore bridge collapse will affect these jobs. Will the annual median income of \$38,940 decrease now that a major part of the bridge is gone? These findings could help support a story about this in the future as we get more data on the bridge. 
+
+**Question Two:**
+
+After cleaning my dataset of about 13 commodities with direct jobs that are related to the Baltimore Port, I found that containers are the biggest commodity that has direct jobs related to the port. This commodity has 7266 direct jobs related to the port. Containers, according to the Maryland Port Administration report, are classified as containerized cargo that is passed through the port. This commodity tends to generate the greatest direct job impact with firms in the maritime service sector. Jobs that are impacted by containerized cargo include longshoremen, freight forwarders/customhouse brokers, warehouses, steamship agents, trucking firms and railroads. For the next step of this project, it will be interesting to see how the median incomes of these jobs relate to the container commodity.
+
+**Question Three:**
+
+My findings showed that the biggest counties with jobs directly related to the Baltimore Port include Baltimore County with about 32.79% of jobs and then Baltimore City with about 27.69% of jobs. This finding raises the question of how these counties and surrounding countries (such as Anne Arundel and Harford County) will be affected by the Baltimore bridge collapse. I included a data visualization of my findings below. 
+
+<https://public.flourish.studio/visualisation/17785537/>

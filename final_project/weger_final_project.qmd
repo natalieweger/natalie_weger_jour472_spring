@@ -1,8 +1,8 @@
 ---
 title: "weger_final_project"
 name: natalie weger 
-date: 04/26/2024
-project: final project part 2 
+date: 04/30/2024
+project: final project part 3
 jour472 - rob wells 
 format: html
 editor: visual

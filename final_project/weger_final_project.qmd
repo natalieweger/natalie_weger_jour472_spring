@@ -1,8 +1,8 @@
 ---
 title: "weger_final_project"
 name: natalie weger 
-date: 04/30/2024
-project: final project part 3
+date: 05/04/2024
+project: final project part 4
 jour472 - rob wells 
 format: html
 editor: visual
@@ -20,14 +20,50 @@ library(dplyr)
 
 ```
 
-The first question I will answer is: What are the Baltimore jobs are related directly to the port and what are their median income? This question is newsworthy because it presents the question of how different types of jobs and incomes will be impacted in light of the Baltimore bridge collapse.
+### 1) What are the Baltimore jobs are related directly to the port and what are their median income?
 
-The first dataset that I've used is called the Baltimore Port Jobs, which I took from The 2023 Economic Impact of the Port of Baltimore in Maryland. I used Adobe Acrobat to extract the data from the website and then download it into a CSV file. The data shows the number of total direct jobs that are associated with the Baltimore port. The second dataset that I've collected is the Occupational Data that is provided by the U.S. Bureau of Labor Statistics. This dataset is put into a CSV that will show the median income of different types of jobs in Maryland.
+This question is newsworthy because it presents the question of how different types of jobs and incomes will be impacted in light of the Baltimore bridge collapse.
 
-To address the question of how the Baltimore bridge collapse could have potentially affected jobs in the port, I cleaned both datasets and joined them to create a table that shows the amount of direct jobs affected by the port, and the (most likely) median income of these jobs. This step has allowed me to set up my data for this project, However, I will have to look into this further to ensure that I am matching each income to the job titles, and also finding the right jobs from the Labor Statistics data to match with the type of port jobs.
+The first dataset that I've used is called the Baltimore Port Jobs, which I took from [The 2023 Economic Impact of the Port of Baltimore in Maryland](https://mpa.maryland.gov/Documents/MarylandEconomicimpactofPOB2023.pdf). I used Adobe Acrobat to extract the data from the website and then download it into a CSV file. The data shows the number of total direct jobs that are associated with the Baltimore port. The second dataset that I've collected is the [Occupational Data](https://docs.google.com/spreadsheets/d/1iA43WV1AOrOo8tUAKG2fZ45jdFO29tQL-WyHqUvgVS8/edit#gid=1006232139) that is provided by the [U.S. Bureau of Labor Statistics](https://www.bls.gov/oes/current/oes_md.htm). This dataset is put into a CSV that will show the median income of different types of jobs in Maryland.
+
+To address the question of how the Baltimore bridge collapse could have potentially affected jobs in the port, I cleaned both datasets and joined them to create a table that shows the amount of direct jobs affected by the port, and the (most likely) median income of these jobs. This step has allowed me to set up my data for this project. However, certain job data within this analysis (which was included in the report, but not in the datasets it provided) included job data with banks, law firms and insurance companies.
+
+**Summary Explanation of Variables:**
+
+The Baltimore Port Jobs dataset shows the amount of types of jobs that are directly related to the Baltimore Port. The dataset showcases the type of jobs, jobs related directly to the port, Maryland Port Administration jobs related to the port and jobs within the private terminal relate to the port. Here are the variables of the job types and what their interpretation is, according to the report and background research.
+
+-   Rail - rail jobs include transportation firms that are involved with railroads, railroad employees
+
+-   Truck - truck drivers carrying mass goods
+
+-   Terminal - terminal operations, particularly associated with handling autos at both State-owned and private terminals.
+
+-   ILA Dockworkers - those who work the docks at the port
+
+-   Tug Assist - Barge - escorting, docking and undocking in narrow shipping channels
+
+-   Pilots - those who are using aircraft to import goods near the port
+
+-   Agents - NA (still finding, could be steamship agents or insurance agents)
+
+-   Maritime Services Construction - design, engineering, construction of ship vessels
+
+-   Freight Forwarders - helps companies make goods ship to final destination
+
+-   Warehouse - warehouse workers who help lifting and organizing of goods
+
+-   Government - port jobs related to agencies on [this list](https://www.pobdirectory.com/listing/government-and-related-agencies)
+
+-   Maryland Port Administration - jobs include plumbers, construction engineers, electrical systems managers
+
+-   Dependent Coshippers, signees - help oversee the transportation of goods in the port
+
+The Maryland Jobs dataset shows a general overview of Maryland Jobs and shows their state (Maryland), a code for the occupation, occupation title, their hourly and annual mean salary.
+
+**Importing and cleaning the data:**
 
 ```{r}
-
+ 
 #import baltimore jobs related to the port, rename the jobs column and then take out unnecessary rows/columns 
 baltimore_port_jobs <- read_csv("baltimore_port_jobs.csv") %>%
 clean_names() %>%
@@ -55,6 +91,12 @@ sum(is.na(maryland_jobs$a_mean))
 maryland_jobs <- maryland_jobs %>%
   filter(a_mean != "#" & a_mean != "*")
 
+```
+
+**Mutating The Data**
+
+```{r}
+
 #use mutate to create a new column called occ_title_2 and change the job names from maryland job data to match names of jobs in  baltimore port
 maryland_jobs <- maryland_jobs %>%
   mutate(
@@ -66,42 +108,71 @@ maryland_jobs <- maryland_jobs %>%
       occ_title == "Helpers, Construction Trades, All Other"   ~ "warehouse",
       occ_title == "Shipping, Receiving, and Inventory Clerks"   ~ "dependent_shippers_consignees",
       occ_title == "Laborerand Freight, Stock, and Material Movers, Hand"   ~ "freight_forwarders",
+      occ_title == "Operating Engineerand Other Construction Equipment Operators" ~ "maryland_port_administration",
+      occ_title == "Electrical and ElectronicInstallerand Repairers, Transportation Equipment" ~ "maryland_port_administration",
+      occ_title == "Plumbers, Pipefitters, and Steamfitters" ~ "maryland_port_administration",
+      occ_title == "First-Line Supervisorof Construction Tradeand Extraction Workers" ~ "maryland_port_administration",
       TRUE                 ~ occ_title 
     )
   )
 
+#i couldn't find a little less than half of the names of baltimore port jobs and properly match to maryland jobs just yet (including terminal, ILA/dockworkers, tug assist/barge, government) this causes a great skew within the data because government jobs pay much higher 
+  
+#now i will calculate the median of maryland port administration jobs by creating a new dataset for mpa jobs
+mpa_jobs <- maryland_jobs %>%
+  filter(occ_title_2 == "maryland_port_administration")
 
-#i couldn't find about half of the names of baltimore port jobs and properly match to maryland jobs just yet (including terminal, ILA/dockworkers, tug assist/barge, government, maryland port administration)
+#filter out commas from the values 
+  mpa_jobs$a_mean <- as.numeric(gsub(",", "", mpa_jobs$a_mean))
 
-#container people will be truckers, warehouse workers, freight people 
+#calculate the median income for the maryland port administration
+  maryland_port_median_income <- median(mpa_jobs$a_mean)
+```
+
+**Joining the data to create a new dataset**
+
+```{r}
 
 #creating a dataset from the maryland jobs database with just these new occupations 
 updated_maryland_jobs <- maryland_jobs %>%
    select(occ_title_2, a_mean) %>% 
    filter(occ_title_2 %in% c("rail","truck","pilots","maritime_services_construction", "warehouse", "dependent_shippers_consignees", "freight_forwarders"))
 
-#create a new dataset with the updated baltimore port jobs that can match the maryland jobs,so that i can do an inner join between the two 
+#create a new dataset with the updated baltimore port jobs that can match the maryland jobs, so that i can do an inner join between the two 
 updated_baltimore_jobs <- baltimore_port_jobs %>%
    select(job_types, total_direct_jobs) %>% 
    filter(job_types %in% c("rail","truck","pilots","maritime_services_construction", "warehouse", "dependent_shippers_consignees", "freight_forwarders"))
 
-#inner join the updated maryland wages and job amounts 
+#inner join the updated maryland wages and job amounts, and take out commas in the values 
 inner_join_table <- updated_maryland_jobs %>%
   inner_join(updated_baltimore_jobs, by = c("occ_title_2" = "job_types"))
+  inner_join_table$a_mean <- as.numeric(gsub(",", "", inner_join_table$a_mean))
+  view(inner_join_table)
 
-view(inner_join_table)
-
-#what is the median income of all maryland jobs?
+#calculate the median income of all maryland jobs?
 maryland_median_income <- median(maryland_jobs$a_mean)
-view(median_income)
-#the median income of all maryland jobs is 47,360
+#view(maryland_median_income)
+#the median income of all maryland jobs is $47,360
+
+#calculating the median income of the baltimore port jobs from combining the inner join table and maryland port median income dataset
+updated_baltimore_median_income <- median(c(inner_join_table$a_mean, maryland_port_median_income))
+view(updated_baltimore_median_income)
+#the median of jobs related to the baltimore port is $42,525
 
 
-baltimore_median_income <- median(inner_join_table$a_mean)
-view(baltimore_median_income)
 ```
 
-The next question that I will answer will be: what are the direct jobs associated with different commodities related to the port? This will be newsworthy as it examines the amount of jobs, associated with different commodities, and how it could be affected by the Baltimore bridge collapse. I was also able to find this dataset from The 2023 Economic Impact of the Port of Baltimore in Maryland. I used Adobe Acrobat to extract the data from the website and then download it into a CSV file. I then cleaned the data and arranged it in descending order to show the total direct jobs, by commodity, that are affected by the port.
+**My Question One Findings:**
+
+There are about 19,970 direct jobs that are related to the Baltimore Port split into 12 different categories. Of those categories, I was able to match eight of them with median incomes through the Maryland jobs database. I was also able to find jobs related to the Maryland Port Administration through [this website](https://www.governmentjobs.com/careers/mdotmd?department%5B0%5D=Maryland%20Port%20Administration&sort=PositionTitle%7CAscending), and was able to calculate the median of those jobs to create this finding. However, I was unable to match the other four (terminal, ILA/dockworkers, tug assist/barge, government). 
+
+Of the eight Baltimore port jobs I found, the median annual income for those jobs is about \$42,525. However, the median annual income of all Maryland jobs is about \$47,360. Although the median income of Baltimore port jobs is lower than the average Maryland job median income, this is probably because higher-paying port jobs, such as government and jobs such as banks, law firms and insurance companies were excluded from this calculation. Although I was able to find the exact government agencies that are related to the Baltimore Port, I was still unable to find the [exact jobs](https://www.pobdirectory.com/listing/government-and-related-agencies) associated with these agencies and the port. Therefore, I left this calculation out of my project because I didn't want to misrepresent these agencies. This is a great first step in my reporting, and my next step on this pitch would be to email/call these government agencies and clarify the specific jobs that are related to the port. This would likely drive the Baltimore Port median income data much higher.
+
+These results raise the question of how the Baltimore bridge collapse will affect these jobs. Will the annual median income of \$42,525 decrease now that a major part of the bridge is gone? These findings could help support a story about this in the future as we get more data on the bridge. 
+
+## **2) W**hat are the direct jobs associated with different commodities related to the port?
+
+This will be newsworthy as it examines the amount of jobs, associated with different commodities, and how it could be affected by the Baltimore bridge collapse. I was also able to find this dataset from The 2023 Economic Impact of the Port of Baltimore in Maryland. I used Adobe Acrobat to extract the data from the website and then download it into a CSV file. I then cleaned the data and arranged it in descending order to show the total direct jobs, by commodity, that are affected by the port.
 
 ```{r}
 
@@ -123,7 +194,7 @@ bmore_commodities <- slice(bmore_commodities, -c(14))
 #make commodity values lowercase
 bmore_commodities$commodities <- tolower(gsub("[ /]", "_", bmore_commodities$commodities))
 
-#arrange the amoutn of direct jobs in descending order 
+#arrange the amount of direct jobs in descending order 
 bmore_commodities <- bmore_commodities %>%
  arrange(desc(total_direct_jobs))
  
@@ -131,7 +202,21 @@ view(bmore_commodities)
 
 ```
 
-The final question that I will answer for this project is: How many jobs in different Maryland counties are affected by the port? To answer this question, I used data from The 2023 Economic Impact of the Port of Baltimore in Maryland. Again, I used Adobe Acrobat to extract the data from the website and then download it into a CSV file. After cleaning up unnecessary rows in the data, I was able to find amount of direct jobs from the port that are in different counties of Maryland. This will allow me to see the scope of the port's impact and how it affects employment and jobs beyond Baltimore.
+**Question Two Findings:**
+
+After cleaning my dataset of about 13 commodities with direct jobs that are related to the Baltimore Port, I found that containers are the biggest commodity that has direct jobs related to the port. This commodity has 7266 direct jobs related to the port. Containers, according to the Maryland Port Administration report, are classified as containerized cargo that is passed through the port. This commodity tends to generate the greatest direct job impact with firms in the maritime service sector. Jobs that are impacted by containerized cargo include longshoremen, freight forwarders/customhouse brokers, warehouses, steamship agents, trucking firms and railroads. For the next step of this project, it will be interesting to see how the median incomes of these jobs relate to the container commodity.
+
+**Summary Explanation of Variables:**
+
+This Baltimore Commodities dataset shows the commodities related to the port and the direct jobs associated with them. The data variables includes the names of these commodities and the number of the total direct jobs associated with them.
+
+## 3) How many jobs in different Maryland counties are directly affected by the port?
+
+To answer this question, I used data from The 2023 Economic Impact of the Port of Baltimore in Maryland. Again, I used Adobe Acrobat to extract the data from the website and then download it into a CSV file. After cleaning up unnecessary rows in the data, I was able to find amount of direct jobs from the port that are in different counties of Maryland. This will allow me to see the scope of the port's impact and how it affects employment and jobs beyond Baltimore.
+
+**Summary Explanation of Variables:**
+
+This Port Counties dataset shows the counties that have jobs related to the port. It includes variable data including county names, the share (percentage) of jobs related to the port in each county and the exact number of total direct jobs in each county related to the port.
 
 ```{r}
 #import county data 
@@ -147,22 +232,12 @@ port_counties$jurisdiction <- tolower(gsub(" ", "_", port_counties$jurisdiction)
 view(port_counties)
 ```
 
-**Findings:**
-
-**Question One:**
-
-There are about 19,970 direct jobs that are related to the Baltimore Port split into 12 different categories. Of those categories, I was able to match seven of them with median incomes through the Maryland jobs database. However, I was unable to match the other five (terminal, ILA/dockworkers, tug assist/barge, government, Maryland Port Administration). 
-
-Of the seven Baltimore port jobs I found, the median annual income for those jobs is about \$38,940. However, the median annual income of all Maryland jobs is about \$47,360. Although the median income of Baltimore port jobs is lower than the average Maryland job median income, this is probably because higher-paying port jobs, such as government and the Maryland Port Administration, were excluded from the calculation. 
-
-These results raise the question of how the Baltimore bridge collapse will affect these jobs. Will the annual median income of \$38,940 decrease now that a major part of the bridge is gone? These findings could help support a story about this in the future as we get more data on the bridge. 
-
-**Question Two:**
-
-After cleaning my dataset of about 13 commodities with direct jobs that are related to the Baltimore Port, I found that containers are the biggest commodity that has direct jobs related to the port. This commodity has 7266 direct jobs related to the port. Containers, according to the Maryland Port Administration report, are classified as containerized cargo that is passed through the port. This commodity tends to generate the greatest direct job impact with firms in the maritime service sector. Jobs that are impacted by containerized cargo include longshoremen, freight forwarders/customhouse brokers, warehouses, steamship agents, trucking firms and railroads. For the next step of this project, it will be interesting to see how the median incomes of these jobs relate to the container commodity.
-
-**Question Three:**
+**Question Three Findings:**
 
 My findings showed that the biggest counties with jobs directly related to the Baltimore Port include Baltimore County with about 32.79% of jobs and then Baltimore City with about 27.69% of jobs. This finding raises the question of how these counties and surrounding countries (such as Anne Arundel and Harford County) will be affected by the Baltimore bridge collapse. I included a data visualization of my findings below. 
 
-<https://public.flourish.studio/visualisation/17785537/>
+::: {.flourish-embed .flourish-map data-src="visualisation/17785537"}
+```{=html}
+<script src="https://public.flourish.studio/resources/embed.js"</script>
+```
+:::

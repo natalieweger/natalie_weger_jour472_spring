@@ -8,6 +8,8 @@ editor: visual
 
 Natalie Weger \| JOUR472 \| 05/09/2024 \| Data Analysis Final Project
 
+**Link to my rendered website:** <https://natalieweger.github.io/natalie_weger_jour472_spring/final_project/weger_final_project.html>
+
 ```{r message=FALSE, warning=FALSE}
 
 #loading libraries 
@@ -366,3 +368,21 @@ My findings showed that the biggest counties with jobs directly related to the B
 ```{r echo=FALSE, results='asis'}
 cat('<div class="flourish-embed flourish-map" data-src="visualisation/17785537"><script src="https://public.flourish.studio/resources/embed.js"></script></div>')
 ```
+
+## Final Story Memo
+
+**The recent Baltimore Bridge collapse is likely to cause notable changes in salary and direct jobs data in the upcoming years.**
+
+My data analysis revealed that projected median salary data related to the Baltimore Port is about \$42,360 while projected private salaries related to the Baltimore Port (through Ports America) is about \$85,000. The median salary of all jobs in Maryland is about \$47,360. There are about 19,970 direct jobs that are related to the Baltimore Port and now that a substantial part of the port is desecrated and businesses have already been impacted, salaries related to the port can see some changes. It is important to bill a foundation of data on Baltimore port salaries as these new salary changes come to light in the upcoming months.
+
+Various jobs related to commodities are impacted by the port, with the driving commodities being a development leader program and marine superintendent. Additionally, 32.79% of Baltimore Port jobs are directly related to Baltimore County while 27.68% of those jobs are directly related to Baltimore City.
+
+This story could paint readers a picture of job and salary impact of the economic port. My analysis will include data from Baltimore Port salaries, Maryland jobs data, commodities related to Baltimore Port jobs and direct jobs related to the port in Maryland counties.
+
+A major benefit of the jobs data I analyzed is that the Maryland jobs database was an extremely useful tool that could let me find the salaries of different jobs related to the port — thus allowing me to connect the salaries databases and connect direct jobs with port salaries. The conclusions that I made from research also provide a strong starting point for further analysis into impacts of the Baltimore port. 
+
+However, limitations of the data are that I could not match every single Maryland job salary to each of the Baltimore Port salaries. This has caused me to footnote some of my data and will require me to reach out to different government agencies and other sources to confirm salary data in my analysis. Another limitation with this data is that even as I’ve matched up salaries with the Maryland jobs database, I would still have to call up places to confirm these salary estimates as well. Certain places that I would reach out to include the Maryland Ports Administration, Ports America, the Baltimore Development Corporation, American Maritime Officers, and other government agencies related to the port. 
+
+Although my foundation of data on the Baltimore Port is exciting and holds much potential, there are still further steps I should take. By reaching out to the agencies I listed above, I could get a better estimate of salary figures related to the port. Additionally, I would like to get specific clarification from the Maryland Port Administration on the definition of certain commodities. For example, which companies in Maryland work for commodities such as containers, automobiles and dry bulk that pass through the port. 
+
+Lastly, to make this story come to life, I would love to get in touch with some of the people whose jobs are directly related to the Baltimore Port. What has happened to the workers who have physically helped drive goods through the port? How are those in the maritime sector reacting now that a bridge collapse has shaken the port? I would love to call some of these sources, which I would get by starting at the Maryland Port Administration, and hear their insights into the future of the port and how their jobs would be at stake. Even interviewing experts from places like the Maryland Port Administration and Ports America could help readers understand a broader background into why the Baltimore Port is so important. These perspectives will let readers know how the Baltimore Port can impact a variety of people in Maryland counties. My reporting has created a foundation of data for the Baltimore Port’s impact that can lead to a well-rounded story as more data comes out about the salary, commodities and jobs related to the Baltimore Port. 

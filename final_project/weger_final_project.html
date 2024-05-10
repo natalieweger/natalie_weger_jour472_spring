@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Natalie Weger JOUR472 Final Project</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="weger_final_project_files/libs/clipboard/clipboard.min.js"></script>
+<script src="weger_final_project_files/libs/quarto-html/quarto.js"></script>
+<script src="weger_final_project_files/libs/quarto-html/popper.min.js"></script>
+<script src="weger_final_project_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="weger_final_project_files/libs/quarto-html/anchor.min.js"></script>
+<link href="weger_final_project_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="weger_final_project_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="weger_final_project_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="weger_final_project_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="weger_final_project_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Natalie Weger JOUR472 Final Project</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="data-analysis-project-part-2" class="level2">
+<h2 class="anchored" data-anchor-id="data-analysis-project-part-2">Data Analysis Project Part 2</h2>
+<p>Natalie Weger | JOUR472 | 05/09/2024 | Data Analysis Final Project</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#loading libraries </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvest)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="what-baltimore-jobs-are-related-directly-to-the-port-and-what-are-their-median-income" class="level3">
+<h3 class="anchored" data-anchor-id="what-baltimore-jobs-are-related-directly-to-the-port-and-what-are-their-median-income">1) What Baltimore jobs are related directly to the port and what are their median income?</h3>
+<p>This question is newsworthy because it presents the question of how different types of jobs and incomes will be impacted in light of the Baltimore bridge collapse.</p>
+<p>The first dataset that I’ve used is called the Baltimore Port Jobs, which I took from <a href="https://mpa.maryland.gov/Documents/MarylandEconomicimpactofPOB2023.pdf" target="_blank">The 2023 Economic Impact of the Port of Baltimore in Maryland</a>. I used Adobe Acrobat to extract the data from the website and then download it into a CSV file. The data shows the number of total direct jobs that are associated with the Baltimore port. The second dataset that I’ve collected is the <a href="https://docs.google.com/spreadsheets/d/1iA43WV1AOrOo8tUAKG2fZ45jdFO29tQL-WyHqUvgVS8/edit#gid=1006232139%20%7Btarget%20=%20blank%7D" target="_blank">Occupational Data</a> that is provided by the <a href="https://www.bls.gov/oes/current/oes_md.htm" target="_blank">U.S. Bureau of Labor Statistics</a>. This dataset is put into a CSV that will show the median income of different types of jobs in Maryland.</p>
+<p>To address the question of how the Baltimore bridge collapse could have potentially affected jobs in the port, I cleaned both datasets and joined them to create a table that shows the amount of direct jobs affected by the port, and the (most likely) median income of these jobs. This step has allowed me to set up my data for this project. However, certain job data within this analysis (which was included in the report, but not in the datasets it provided) included job data with banks, law firms and insurance companies.</p>
+<p>To provide supplemental information about this, I also pulled salary data from a <a href="https://www.glassdoor.com/Salary/Ports-America-Baltimore-Salaries-EI_IE147702.0,13_IL.14,23_IM63.html" target="_blank">Glassdoor website</a> that showcased Baltimore jobs positions by Ports America — a terminal operating company that works with ports across the nation, including those in Baltimore. Although I couldn’t connect this data into my Baltimore Port Jobs database, this data gives us supplemental information into private jobs related to the Baltimore Port.</p>
+<p><strong>Summary Explanation of Variables:</strong></p>
+<p>The Baltimore Port Jobs dataset shows the amount of types of jobs that are directly related to the Baltimore Port. The dataset showcases the type of jobs, jobs related directly to the port, Maryland Port Administration jobs related to the port and jobs within the private terminal relate to the port. Here are the variables of the job types and what their interpretation is, according to the report and background research.</p>
+<ul>
+<li><p>Rail - rail jobs include transportation firms that are involved with railroads, railroad employees</p></li>
+<li><p>Truck - truck drivers carrying mass goods</p></li>
+<li><p>Terminal - terminal operations, particularly associated with handling autos at both State-owned and private terminals.</p></li>
+<li><p>ILA Dockworkers - those who work the docks at the port</p></li>
+<li><p>Tug Assist - Barge - escorting, docking and undocking in narrow shipping channels</p></li>
+<li><p>Pilots - those who are using aircraft to import goods near the port</p></li>
+<li><p>Agents - NA (still finding, could be steamship agents or insurance agents)</p></li>
+<li><p>Maritime Services Construction - design, engineering, construction of ship vessels</p></li>
+<li><p>Freight Forwarders - helps companies make goods ship to final destination</p></li>
+<li><p>Warehouse - warehouse workers who help lifting and organizing of goods</p></li>
+<li><p>Government - port jobs related to agencies on <a href="https://www.pobdirectory.com/listing/government-and-related-agencies" target="_blank">this list</a></p></li>
+<li><p>Maryland Port Administration - jobs include plumbers, construction engineers, electrical systems managers</p></li>
+<li><p>Dependent Coshippers, signees - help oversee the transportation of goods in the port</p></li>
+</ul>
+<p>The Maryland Jobs dataset shows a general overview of Maryland Jobs and shows their state (Maryland), a code for the occupation, occupation title, their hourly and annual mean salary. Lastly, the Glassdoor dataset shows jobs related to the Baltimore Port offered by Ports America. The columns of the dataset include titles of jobs related to the Baltimore port, and then the low and high range of salaries for each of those jobs. This can help us get better salary analysis of jobs related to the Baltimore Port.</p>
+<p><strong>Importing and cleaning the data:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#import baltimore jobs related to the port, rename the jobs column and then take out unnecessary rows/columns </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>baltimore_port_jobs <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"baltimore_port_jobs.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#take out unnecessary rows/columns </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rename</span>(<span class="at">job_types =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">subset</span>(<span class="at">select =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="dv">5</span>))</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>baltimore_port_jobs <span class="ot">&lt;-</span> <span class="fu">slice</span>(baltimore_port_jobs, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">16</span>,<span class="dv">17</span>))</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#clean the names under the job_titles column</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>baltimore_port_jobs<span class="sc">$</span>job_types <span class="ot">&lt;-</span> <span class="fu">tolower</span>(<span class="fu">gsub</span>(<span class="st">"[ /]"</span>, <span class="st">"_"</span>, baltimore_port_jobs<span class="sc">$</span>job_types))</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#import the mean incomes of different jobs in maryland </span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>maryland_jobs <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"maryland_jobs.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#clean the dataset names </span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="fu">rename</span>(<span class="at">state =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#take out columns so that it just displays annual mean income </span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="fu">subset</span>(<span class="at">select =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">8</span>))</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter out all rows where there is a null value for annual mean data </span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(maryland_jobs<span class="sc">$</span>a_mean))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>maryland_jobs <span class="ot">&lt;-</span> maryland_jobs <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(a_mean <span class="sc">!=</span> <span class="st">"#"</span> <span class="sc">&amp;</span> a_mean <span class="sc">!=</span> <span class="st">"*"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Mutating the data and adding in the projected median income of Maryland Port Administration jobs</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#use mutate to create a new column called occ_title_2 and change the job names from maryland job data to match names of jobs in  baltimore port</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>maryland_jobs <span class="ot">&lt;-</span> maryland_jobs <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">occ_title_2 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      occ_title <span class="sc">==</span> <span class="st">"Railroad Brake, Signal, and Switch Operatorand Locomotive Firers"</span>   <span class="sc">~</span> <span class="st">"rail"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      occ_title <span class="sc">==</span> <span class="st">"Heavy and Tractor-Trailer Truck Drivers"</span>   <span class="sc">~</span> <span class="st">"truck"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      occ_title <span class="sc">==</span> <span class="st">"Captains, Mates, and Pilotof Water Vessels"</span>   <span class="sc">~</span> <span class="st">"pilots"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      occ_title <span class="sc">==</span> <span class="st">"Construction Laborers"</span>   <span class="sc">~</span> <span class="st">"maritime_services_construction"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      occ_title <span class="sc">==</span> <span class="st">"Helpers, Construction Trades, All Other"</span>   <span class="sc">~</span> <span class="st">"warehouse"</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      occ_title <span class="sc">==</span> <span class="st">"Shipping, Receiving, and Inventory Clerks"</span>   <span class="sc">~</span> <span class="st">"dependent_shippers_consignees"</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      occ_title <span class="sc">==</span> <span class="st">"Laborerand Freight, Stock, and Material Movers, Hand"</span>   <span class="sc">~</span> <span class="st">"freight_forwarders"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      occ_title <span class="sc">==</span> <span class="st">"Operating Engineerand Other Construction Equipment Operators"</span> <span class="sc">~</span> <span class="st">"maryland_port_administration"</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      occ_title <span class="sc">==</span> <span class="st">"Electrical and ElectronicInstallerand Repairers, Transportation Equipment"</span> <span class="sc">~</span> <span class="st">"maryland_port_administration"</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>      occ_title <span class="sc">==</span> <span class="st">"Plumbers, Pipefitters, and Steamfitters"</span> <span class="sc">~</span> <span class="st">"maryland_port_administration"</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>      occ_title <span class="sc">==</span> <span class="st">"First-Line Supervisorof Construction Tradeand Extraction Workers"</span> <span class="sc">~</span> <span class="st">"maryland_port_administration"</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>                 <span class="sc">~</span> occ_title </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#i couldn't find a little less than half of the names of baltimore port jobs and properly match to maryland jobs just yet (including terminal, ILA/dockworkers, tug assist/barge, government) this causes a great skew within the data because government jobs pay much higher </span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">#now i will calculate the median of maryland port administration jobs by creating a new dataset for mpa jobs</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>mpa_jobs <span class="ot">&lt;-</span> maryland_jobs <span class="sc">%&gt;%</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(occ_title_2 <span class="sc">==</span> <span class="st">"maryland_port_administration"</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co">#filter out commas from the values </span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  mpa_jobs<span class="sc">$</span>a_mean <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">gsub</span>(<span class="st">","</span>, <span class="st">""</span>, mpa_jobs<span class="sc">$</span>a_mean))</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="co">#calculate the median income for the maryland port administration</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  maryland_port_median_income <span class="ot">&lt;-</span> <span class="fu">median</span>(mpa_jobs<span class="sc">$</span>a_mean)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(maryland_port_median_income)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 63400</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#the median income of jobs in the maryland port administration is $63,400</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Joining the data to create a new dataset</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#creating a dataset from the maryland jobs database with just these new occupations </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>updated_maryland_jobs <span class="ot">&lt;-</span> maryland_jobs <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">select</span>(occ_title_2, a_mean) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">filter</span>(occ_title_2 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"rail"</span>,<span class="st">"truck"</span>,<span class="st">"pilots"</span>,<span class="st">"maritime_services_construction"</span>, <span class="st">"warehouse"</span>, <span class="st">"dependent_shippers_consignees"</span>, <span class="st">"freight_forwarders"</span>))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#create a new dataset with the updated baltimore port jobs that can match the maryland jobs, so that i can do an inner join between the two </span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>updated_baltimore_jobs <span class="ot">&lt;-</span> baltimore_port_jobs <span class="sc">%&gt;%</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">select</span>(job_types, total_direct_jobs) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>   <span class="fu">filter</span>(job_types <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"rail"</span>,<span class="st">"truck"</span>,<span class="st">"pilots"</span>,<span class="st">"maritime_services_construction"</span>, <span class="st">"warehouse"</span>, <span class="st">"dependent_shippers_consignees"</span>, <span class="st">"freight_forwarders"</span>))</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#inner join the updated maryland wages and job amounts, and take out commas in the values </span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>inner_join_table <span class="ot">&lt;-</span> updated_maryland_jobs <span class="sc">%&gt;%</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(updated_baltimore_jobs, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"occ_title_2"</span> <span class="ot">=</span> <span class="st">"job_types"</span>))</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  inner_join_table<span class="sc">$</span>a_mean <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">gsub</span>(<span class="st">","</span>, <span class="st">""</span>, inner_join_table<span class="sc">$</span>a_mean))</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(inner_join_table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  occ_title_2                    a_mean total_direct_jobs
+  &lt;chr&gt;                           &lt;dbl&gt;             &lt;dbl&gt;
+1 freight_forwarders              35370               673
+2 truck                           51090              4794
+3 maritime_services_construction  38980               977
+4 dependent_shippers_consignees   38940              3474
+5 warehouse                       37370              1237
+6 pilots                         102240               139</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#calculate the median income of all maryland jobs</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>maryland_median_income <span class="ot">&lt;-</span> <span class="fu">median</span>(maryland_jobs<span class="sc">$</span>a_mean)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#the median income of all maryland jobs is $47,360</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#calculating the median income of the baltimore port jobs from combining the inner join table and maryland port median income dataset</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>updated_baltimore_median_income <span class="ot">&lt;-</span> <span class="fu">median</span>(<span class="fu">c</span>(inner_join_table<span class="sc">$</span>a_mean, maryland_port_median_income))</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(updated_baltimore_median_income)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 42525</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#the median of jobs related to the baltimore port is $42,525</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Scraping a website from Glassdoor to get more private salary data about the Baltimore Port</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#identify the website that we are scraping </span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>sboe_url <span class="ot">&lt;-</span> <span class="st">"https://www.glassdoor.com/Salary/Ports-America-Baltimore-Salaries-EI_IE147702.0,13_IL.14,23_IM63.html"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#read in the html</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> sboe_url <span class="sc">%&gt;%</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_html</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_table</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Cleaning the Glassdoor job data into a cleaner dataset with columns on jobs and the low and high salary per job</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#making the scrapped website data into a dataset</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>raw_port_america_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Job_Title =</span> <span class="fu">c</span>(<span class="st">"Superintendent11 Salaries submitted$92K-$131K$103K | $6K0 open jobs"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"Marine Superintendent3 Salaries submitted$105K-$146K$114K | $9K0 open jobs"</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"Claims Administrator2 Salaries submitted$43K-$60K$51K | $00 open jobs"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"Billing Specialist2 Salaries submitted$44K-$58K$51K | $00 open jobs"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"Claims Adjuster1 Salaries submitted$52K-$78K$63K | $00 open jobs"</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"Long Term Substitute Teacher1 Salaries submitted$50K-$79K$63K | $00 open jobs"</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"Operations Manager1 Salaries submitted$84K-$125K$93K | $9K0 open jobs"</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"Logistic Coordinator1 Salaries submitted$43K-$57K$49K | $00 open jobs"</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"Marine Superintendnet1 Salaries submitted$104K-$143K$114K | $8K0 open jobs"</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"Development Leader Program1 Salaries submitted$99K-$177K$118K | $14K0 open jobs"</span>),</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#extracting data to make job title and salary range columns </span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>port_america_data <span class="ot">&lt;-</span> raw_port_america_data <span class="sc">%&gt;%</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">Job_Titles =</span> <span class="fu">sub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">d+ Salaries submitted.*"</span>, <span class="st">""</span>, Job_Title),</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">Salary_Range =</span> <span class="fu">sub</span>(<span class="st">".*?(</span><span class="sc">\\</span><span class="st">$</span><span class="sc">\\</span><span class="st">d+K-</span><span class="sc">\\</span><span class="st">$</span><span class="sc">\\</span><span class="st">d+K).*"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">1"</span>, Job_Title)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(Job_Titles, Job_Title, Salary_Range) </span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co">#splitting the salary range by dash into low and high columns </span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>port_america_data <span class="ot">&lt;-</span> port_america_data <span class="sc">%&gt;%</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(<span class="at">col =</span> Salary_Range, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"low"</span>, <span class="st">"high"</span>), <span class="at">sep =</span> <span class="st">"-"</span>)</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co">#cleaning the low column so that we take out the "K" and the "$". we are making new column for this to override the existing dataset </span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>port_america_data<span class="sc">$</span>salary_low <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"K"</span>, <span class="st">""</span>, port_america_data<span class="sc">$</span>low)</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>port_america_data<span class="sc">$</span>salary_low <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">$"</span>, <span class="st">""</span>, port_america_data<span class="sc">$</span>salary_low)</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co">#cleaning the high column so that we take out the "K" and the "$". we are making new column for this to override the existing dataset </span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>port_america_data<span class="sc">$</span>salary_high <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"K"</span>, <span class="st">""</span>, port_america_data<span class="sc">$</span>high)</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>port_america_data<span class="sc">$</span>salary_high <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">$"</span>, <span class="st">""</span>, port_america_data<span class="sc">$</span>salary_high)</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="co"># adding three zeros to the "salary_low" column</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>port_america_data<span class="sc">$</span>salary_low <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(port_america_data<span class="sc">$</span>salary_low) <span class="sc">*</span> <span class="dv">1000</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="co">#adding three zeros to the "salary_high" column</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>port_america_data<span class="sc">$</span>salary_high <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(port_america_data<span class="sc">$</span>salary_high) <span class="sc">*</span> <span class="dv">1000</span></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a><span class="co">#after cleaning the data and creating new column, i will create a new cleaned dataset with different positions named and their high and low salaries </span></span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>updated_port_america <span class="ot">&lt;-</span> port_america_data <span class="sc">%&gt;%</span></span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span> (Job_Titles, salary_low, salary_high)</span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a column for the median income of each job between the low and high salary </span></span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>updated_port_america <span class="ot">&lt;-</span> updated_port_america <span class="sc">%&gt;%</span></span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">median_both =</span> <span class="fu">median</span>(<span class="fu">c</span>(salary_high, salary_low), <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(updated_port_america)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+# Rowwise: 
+  Job_Titles                   salary_low salary_high median_both
+  &lt;chr&gt;                             &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+1 Superintendent                    92000      131000      111500
+2 Marine Superintendent            105000      146000      125500
+3 Claims Administrator              43000       60000       51500
+4 Billing Specialist                44000       58000       51000
+5 Claims Adjuster                   52000       78000       65000
+6 Long Term Substitute Teacher      50000       79000       64500</code></pre>
+</div>
+</div>
+<p><strong>Calculating the median incomes of private salary data that are related to the Baltimore Port</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#calculating the median income of the low column for private salary data related to the Baltimore Port </span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>median_low <span class="ot">&lt;-</span> <span class="fu">median</span>(updated_port_america<span class="sc">$</span>salary_low)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(median_low)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 68000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#calculating the median income of the high column for private salary data related to the Baltimore Port </span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>median_high <span class="ot">&lt;-</span> <span class="fu">median</span>(updated_port_america<span class="sc">$</span>salary_high)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(median_high)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 102000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#The median salary data of Port America jobs that are related to Baltimore ranges from $68,000 to $102,000. This is a notable increase from the Baltimore Port salary data that we found above</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>My Question One Findings:</strong></p>
+<p>There are about 19,970 direct jobs that are related to the Baltimore Port split into 12 different categories. Of those categories, I was able to match eight of them with median incomes through the Maryland jobs database. I was also able to find jobs related to the Maryland Port Administration through <a href="https://www.governmentjobs.com/careers/mdotmd?department%5B0%5D=Maryland%20Port%20Administration&amp;sort=PositionTitle%7CAscending" target="_blank">this website</a>, and was able to calculate the median of those jobs to create this finding. However, I was unable to match the other four (terminal, ILA/dockworkers, tug assist/barge, government).&nbsp;</p>
+<p>Of the eight Baltimore port jobs I found, the median annual income for those jobs is about $42,525. However, the median annual income of all Maryland jobs is about $47,360. Although the median income of Baltimore port jobs is lower than the average Maryland job median income, this is probably because higher-paying port jobs, such as government and jobs such as banks, law firms and insurance companies were excluded from this calculation. Although I was able to find the exact government agencies that are related to the Baltimore Port, I was still unable to find the <a href="https://www.pobdirectory.com/listing/government-and-related-agencies" target="_blank">exact jobs</a> associated with these agencies and the port. The next step on this pitch would be to email/call these government agencies and clarify the specific jobs that are related to the port.</p>
+<div class="flourish-embed flourish-chart" data-src="visualisation/17902057">
+<script src="https://public.flourish.studio/resources/embed.js"></script>
+</div>
+<p>However, I was also able to find another private company that works with Baltimore Ports, called Ports America, and find a job listing of salaries that are listed under Ports America. These jobs are higher-paying and related to the port, which let us gain better insights into the types of jobs related to the port and their incomes. The median range of the jobs I found related to Ports America are $68,000 to $102,000, which has a median value of $85,000. This projected rate is much higher than the Baltimore median Port income of $42,525 that I found earlier. This shows that there are some at the Baltimore port that take highly, which is something that we should take into account with the bridge collapse.</p>
+<div class="flourish-embed flourish-chart" data-src="visualisation/17902525">
+<script src="https://public.flourish.studio/resources/embed.js"></script>
+</div>
+<p>These results raise the question of how the Baltimore bridge collapse will affect these jobs. Will the annual median income of $42,525 and the projected private income of $68,000 to $102,000 decrease now that a major part of the bridge is gone? These findings could help support a story about this in the future as we get more data on the bridge</p>
+<div class="flourish-embed flourish-chart" data-src="visualisation/17902727">
+<script src="https://public.flourish.studio/resources/embed.js"></script>
+</div>
+</section>
+<section id="what-are-the-direct-jobs-associated-with-different-commodities-related-to-the-port" class="level3">
+<h3 class="anchored" data-anchor-id="what-are-the-direct-jobs-associated-with-different-commodities-related-to-the-port">2) What are the direct jobs associated with different commodities related to the port?</h3>
+<p>This will be newsworthy as it examines the amount of jobs associated with different commodities, and how it could be affected by the Baltimore bridge collapse. I was also able to find this dataset from The 2023 Economic Impact of the Port of Baltimore in Maryland. I used Adobe Acrobat to extract the data from the website and then download it into a CSV file. I then cleaned the data and arranged it in descending order to show the total direct jobs, by commodity, that are affected by the port.</p>
+<p><strong>Loading and cleaning the Baltimore commodity data</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load baltimore commodity data </span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>bmore_commodities <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"bmore_commodities.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#clean the data to make the column names lowercase </span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">#remove other columns to just show total direct jobs </span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="fu">subset</span>(<span class="at">select =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>))</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">#take away the ".000" decimals </span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>bmore_commodities<span class="sc">$</span>total_direct_jobs <span class="ot">&lt;-</span> <span class="fu">round</span>(bmore_commodities<span class="sc">$</span>total_direct_jobs)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co">#remove totals row </span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>bmore_commodities <span class="ot">&lt;-</span> <span class="fu">slice</span>(bmore_commodities, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">14</span>))</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="co">#make commodity values lowercase</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>bmore_commodities<span class="sc">$</span>commodities <span class="ot">&lt;-</span> <span class="fu">tolower</span>(<span class="fu">gsub</span>(<span class="st">"[ /]"</span>, <span class="st">"_"</span>, bmore_commodities<span class="sc">$</span>commodities))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Finding the amount of direct jobs per commodity</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#arrange the amount of direct jobs in descending order </span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>bmore_commodities <span class="ot">&lt;-</span> bmore_commodities <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a> <span class="fu">arrange</span>(<span class="fu">desc</span>(total_direct_jobs))</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bmore_commodities)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  commodities    total_direct_jobs
+  &lt;chr&gt;                      &lt;dbl&gt;
+1 containers                  7266
+2 not_allocated               3478
+3 other_dry_bulk              2426
+4 automobiles                 2065
+5 roro                        1132
+6 break_bulk                   794</code></pre>
+</div>
+</div>
+<p><strong>Question Two Findings:</strong></p>
+<p>After cleaning my dataset of about 13 commodities with direct jobs that are related to the Baltimore Port, I found that containers are the biggest commodity that has direct jobs related to the port. This commodity has 7266 direct jobs related to the port. Containers, according to the Maryland Port Administration report, are classified as containerized cargo that is passed through the port. This commodity tends to generate the greatest direct job impact with firms in the maritime service sector. Jobs that are impacted by containerized cargo include longshoremen, freight forwarders/customhouse brokers, warehouses, steamship agents, trucking firms and railroads. For the next step of this project, it will be interesting to see how the median incomes of these jobs relate to the container commodity.</p>
+<div class="flourish-embed flourish-chart" data-src="visualisation/17899714">
+<script src="https://public.flourish.studio/resources/embed.js"></script>
+</div>
+<p><strong>Summary Explanation of Variables:</strong></p>
+<p>This Baltimore Commodities dataset shows the commodities related to the port and the direct jobs associated with them. The data variables includes the names of these commodities and the number of the total direct jobs associated with them.</p>
+</section>
+</section>
+<section id="how-many-jobs-in-different-maryland-counties-are-directly-affected-by-the-port" class="level2">
+<h2 class="anchored" data-anchor-id="how-many-jobs-in-different-maryland-counties-are-directly-affected-by-the-port">3) How many jobs in different Maryland counties are directly affected by the port?</h2>
+<p>To answer this question, I used data from The 2023 Economic Impact of the Port of Baltimore in Maryland. Again, I used Adobe Acrobat to extract the data from the website and then download it into a CSV file. After cleaning up unnecessary rows in the data, I was able to find amount of direct jobs from the port that are in different counties of Maryland. This will allow me to see the scope of the port’s impact and how it affects employment and jobs beyond Baltimore.</p>
+<p><strong>Summary Explanation of Variables:</strong></p>
+<p>This Port Counties dataset shows the counties that have jobs related to the port. It includes variable data including county names, the share (percentage) of jobs related to the port in each county and the exact number of total direct jobs in each county related to the port.</p>
+<p><strong>Loading dataset</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#import county data </span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>port_counties <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"port_counties.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">clean_names</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Finding share of direct jobs in counties</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#delete the total row and county row</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>port_counties <span class="ot">&lt;-</span> <span class="fu">slice</span>(port_counties, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">9</span>))</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#make counties lowercase</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>port_counties<span class="sc">$</span>jurisdiction <span class="ot">&lt;-</span> <span class="fu">tolower</span>(<span class="fu">gsub</span>(<span class="st">" "</span>, <span class="st">"_"</span>, port_counties<span class="sc">$</span>jurisdiction))</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">#arrange the amount of direct jobs related to counties in descending order</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>port_counties <span class="ot">&lt;-</span> port_counties <span class="sc">%&gt;%</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a> <span class="fu">arrange</span>(<span class="fu">desc</span>(total_direct_jobs))</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(port_counties)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  jurisdiction   share  total_direct_jobs
+  &lt;chr&gt;          &lt;chr&gt;              &lt;dbl&gt;
+1 baltimore      32.79%              6548
+2 baltimore_city 27.69%              5529
+3 anne_arundel   21.46%              4286
+4 other_maryland 7.48%               1493
+5 harford        5.84%               1167
+6 other_us       2.79%                557</code></pre>
+</div>
+</div>
+<p><strong>Question Three Findings:</strong></p>
+<p>My findings showed that the biggest counties with jobs directly related to the Baltimore Port include Baltimore County with about 32.79% of jobs and then Baltimore City with about 27.69% of jobs. This finding raises the question of how these counties and surrounding countries (such as Anne Arundel and Harford County) will be affected by the Baltimore bridge collapse. I included a data visualization of my findings below.&nbsp;</p>
+<div class="flourish-embed flourish-map" data-src="visualisation/17785537">
+<script src="https://public.flourish.studio/resources/embed.js"></script>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
